@@ -1,5 +1,5 @@
 # A-Branch-and-Price-Algorithm-for-VRPTW
-This Repo implements a branch-and-price algorithm for Vehicle Routing Problems with Time Windows using Python. 
+This Repo implements a branch-and-price algorithm for Vehicle Routing Problems with Time Windows using Python. (Gurobi license needed)
 ![B&P solution for VRPTW on dataset R101](https://github.com/Guard42/A-Branch-and-Price-Algorithm-for-VRPTW/tree/main/fig/VRPTW_B&P_Sol_DatasetR101.svg)
 
 # Contact
