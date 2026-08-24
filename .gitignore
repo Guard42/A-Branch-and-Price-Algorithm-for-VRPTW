@@ -178,3 +178,7 @@ cython_debug/
 
 # bpvrptw build/test artifacts
 artifacts/
+
+# Harness-local state (not part of the library)
+.humanize/
+.dsh_better_edit/
