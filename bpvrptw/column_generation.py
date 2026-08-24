@@ -121,9 +121,6 @@ class ColumnGeneration:
             if seed_columns is not None
             else default_seed_columns(inst, arc_allowed)
         )
-        started = time.perf_counter()
-        inst = self._instance
-        seeds = seed_columns if seed_columns is not None else default_seed_columns(inst)
         # Column order inside the backend: seeds first, then priced columns
         # in insertion order -- mirrored in ``records`` below.
         records: list[RouteRecord] = list(seeds)
@@ -148,9 +145,22 @@ class ColumnGeneration:
                 shift = np.concatenate(([0.0], duals[: inst.n_customers], [0.0]))
                 rc_matrix = inst.dist - shift[:, None]
 
-                priced = ESPPRCSolver(inst, rc_matrix, arc_allowed=arc_allowed).solve(
-                    max_routes=pricing_routes, threshold=PRICING_THRESHOLD
+                remaining: float | None = None
+                if time_limit_seconds is not None:
+                    remaining = max(0.01, time_limit_seconds - (time.perf_counter() - started))
+                priced = ESPPRCSolver(
+                    inst, rc_matrix, arc_allowed=arc_allowed
+                ).solve(
+                    max_routes=pricing_routes,
+                    threshold=PRICING_THRESHOLD,
+                    time_limit_seconds=remaining,
                 )
+                if priced.routes and not priced.exhausted and (
+                    time_limit_seconds is not None
+                    and time.perf_counter() - started >= time_limit_seconds
+                ):
+                    status = "time_limit"
+                    break
                 fresh = priced.routes
                 if not fresh:
                     break

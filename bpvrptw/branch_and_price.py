@@ -210,8 +210,15 @@ class BranchAndPrice:
 
             arc_allowed = dist_matrix < (_FORBIDDEN - 1e6)
             cg = ColumnGeneration(inst, lp_solver=ctx.lp_solver)
+            remaining: float | None = None
+            if ctx.deadline is not None:
+                remaining = max(0.01, ctx.deadline - time.perf_counter())
             try:
-                result = cg.solve(seed_columns=list(routes), arc_allowed=arc_allowed)
+                result = cg.solve(
+                    seed_columns=list(routes),
+                    arc_allowed=arc_allowed,
+                    time_limit_seconds=remaining,
+                )
             except RuntimeError as exc:
                 # The master problem cannot even be seeded under these
                 # branching constraints -> this subtree is infeasible.

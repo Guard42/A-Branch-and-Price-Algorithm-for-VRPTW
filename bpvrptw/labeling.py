@@ -229,8 +229,8 @@ class ESPPRCSolver:
                         "pricing time limit (%.1fs) reached; returning partial result",
                         time_limit_seconds,
                     )
-                exhausted = False
-                break
+                    exhausted = False
+                    break
             if n_labels >= max_labels:
                 _logger.warning(
                     "pricing label cap (%d) reached; returning partial result", max_labels
