@@ -176,16 +176,22 @@ class ESPPRCSolver:
         n = inst.total_vertices
         rc = self._rc
         dist = inst.dist
-        speed = inst.speed
-        demand = inst.demand
-        ready = inst.ready_time
-        due = inst.due_time
-        service = inst.service_time
+        # Hot-path arrays are converted to plain nested lists once: scalar
+        # indexing into lists is several times faster than numpy element
+        # access, and the float values are bit-identical.
+        ttime = (dist / self._instance.speed).tolist()
+        rc_l = rc.tolist() if isinstance(rc, np.ndarray) else rc
+        demand = inst.demand.tolist()
+        ready = inst.ready_time.tolist()
+        due = inst.due_time.tolist()
+        service = inst.service_time.tolist()
         start = inst.start_depot
         end = inst.end_depot
         capacity = inst.capacity
         customer_range = range(1, n - 1)
-
+        arc_allowed = (
+            None if self._arc_allowed is None else self._arc_allowed.tolist()
+        )
         labels: list[_Label] = []
         counter = itertools.count()
         start_mask = 1 << start
@@ -206,20 +212,16 @@ class ESPPRCSolver:
 
         def _prune_mask(mask: int, city: int, arrival: float, load: float) -> int:
             """Feillet-style: mark customers unreachable from here as visited."""
-            if self._arc_allowed is not None:
+            if arc_allowed is not None:
                 return mask  # unsafe under forbidden arcs; keep completeness
+            row = ttime[city]
+            svc = service[city]
             for k in customer_range:
                 if not (mask >> k) & 1:
-                    earliest = arrival + float(dist[city, k]) / speed + service[city]
+                    earliest = arrival + row[k] + svc
                     if earliest > due[k] + _EPS or load + demand[k] > capacity + _EPS:
                         mask |= 1 << k
-            return mask
 
-            for k in customer_range:
-                if not (mask >> k) & 1:
-                    earliest = arrival + float(dist[city, k]) / speed + service[city]
-                    if earliest > due[k] + _EPS or load + demand[k] > capacity + _EPS:
-                        mask |= 1 << k
             return mask
 
         while heap:
@@ -269,23 +271,24 @@ class ESPPRCSolver:
             base_time = label.time
             base_load = label.load
             base_city = label.city
+            tt_row = ttime[base_city]
+            svc_here = service[base_city]
+            rc_row = rc_l[base_city]
+            allow_row = None if arc_allowed is None else arc_allowed[base_city]
             for j in range(n):
                 if j == base_city or j == start or (label.mask >> j) & 1:
                     continue
-                if (
-                    self._arc_allowed is not None
-                    and not self._arc_allowed[base_city, j]
-                ):
+                if allow_row is not None and not allow_row[j]:
                     continue  # branching forbade this arc
                 if base_city == start and j == end:
                     continue  # a route needs at least one customer
-                arrival = base_time + float(dist[base_city, j]) / speed + service[base_city]
+                arrival = base_time + tt_row[j] + svc_here
                 if arrival < ready[j]:
-                    arrival = float(ready[j])
+                    arrival = ready[j]
                 new_load = base_load + demand[j]
                 if arrival > due[j] + _EPS or new_load > capacity + _EPS:
                     continue
-                new_cost = label.cost + float(rc[base_city, j])
+                new_cost = label.cost + rc_row[j]
                 new_mask = label.mask | (1 << j)
 
                 if j == end:
