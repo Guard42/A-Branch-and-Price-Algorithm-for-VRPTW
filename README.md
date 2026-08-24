@@ -26,7 +26,25 @@ implementation follows the classical Desaulniers/Solomon framework; the
 legacy code this repo started from is preserved under `legacy/` together
 with a defect catalogue (D1–D9) that every design decision here fixes.
 
-## Features
+```mermaid
+flowchart TB
+    subgraph own["Our code owns the search"]
+        BP["BranchAndPrice\n(B&B tree, branching, bounds)"]
+        CG["ColumnGeneration\n(RMP loop, duals)"]
+        ES["ESPPRCSolver\n(best-first labeling + dominance)"]
+    end
+    subgraph lp["Pluggable LP oracles"]
+        HS["HiGHS\n(default, license-free)"]
+        GRB["Gurobi\n(optional extra)"]
+    end
+    I["VRPTWInstance\n(Solomon reader)"] --> BP
+    BP --> CG
+    CG --> ES
+    CG <--> HS & GRB
+    ES -- "negative reduced-cost routes" --> CG
+    CG -- "LP bound + columns" --> BP
+```
+
 
 - **Typed public API** (`py.typed`): `VRPTWInstance`, `Route`, `Solution`,
   `BranchAndPrice`, `ESPPRCSolver`, … with JSON round-tripping.
