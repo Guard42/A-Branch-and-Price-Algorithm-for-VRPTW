@@ -231,10 +231,27 @@ class BranchAndPrice:
         # "relaxation became infeasible because arcs got forbidden" test.
         maxlength = float(np.sum(np.max(inst.dist, axis=1)))
 
-        seed_routes = [
-            RouteRecord.from_path(inst, [0, c, inst.end_depot])
-            for c in inst.customers
-        ]
+        seed_routes: list[RouteRecord] = []
+        for c in inst.customers:
+            try:
+                seed_routes.append(
+                    RouteRecord.from_path(inst, [0, c, inst.end_depot])
+                )
+            except ValueError:
+                continue  # this customer relies on multi-customer routes
+        if not seed_routes:
+            # Not even one customer can be served alone -> no feasible
+            # solution exists.
+            return Solution(
+                status=SolutionStatus.INFEASIBLE,
+                routes=[],
+                total_cost=0.0,
+                lower_bound=None,
+                solve_time_seconds=time.perf_counter() - ctx.started,
+                instance_name=inst.name,
+                meta={"bb_nodes": 0, "lp_solver": ctx.lp_solver,
+                      "gap_closed": False, "gap_pct": None},
+            )
 
         def _node(
             node: _TreeNode,

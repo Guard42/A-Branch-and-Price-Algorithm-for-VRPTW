@@ -17,7 +17,7 @@ dependencies = [
 [project.optional-dependencies]
 gurobi = ["gurobipy>=11"]
 plot = ["matplotlib>=3.7"]
-dev = ["pytest>=8", "ruff>=0.4"]
+dev = ["pytest>=8", "pytest-cov>=5", "ruff>=0.4"]
 
 [project.scripts]
 bpvrptw = "bpvrptw.cli:main"
