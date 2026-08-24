@@ -30,7 +30,7 @@ from dataclasses import dataclass, field
 import numpy as np
 
 from ._util import get_logger
-from .column_generation import PRICING_THRESHOLD, ColumnGeneration
+from .column_generation import PRICING_THRESHOLD, CGResult, ColumnGeneration
 from .instance import VRPTWInstance
 from .solution import RouteRecord, Solution, SolutionStatus
 
@@ -136,7 +136,7 @@ def _select_branch_edge(
 
 def _maybe_record_incumbent(
     ctx: _BPContext,
-    result: object,
+    result: CGResult,
     verbose: bool,
     depth: int,
 ) -> bool:

@@ -23,7 +23,7 @@ within solver tolerance.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
 import numpy as np
 
@@ -79,7 +79,8 @@ class RMPBackend(Protocol):
 
 def _seed_lp_arrays(
     instance: VRPTWInstance, seed_columns: list[tuple[float, list[int]]]
-) -> tuple[np.ndarray, ...]:
+) -> tuple[np.ndarray, int, dict[int, int], np.ndarray, np.ndarray, np.ndarray]:
+    # (costs, n_rows, row_of_customer, starts, indices, values)
     """Build the arrays for the initial (seeded) RMP."""
     customers = list(instance.customers)
     row_of_customer = {c: i for i, c in enumerate(customers)}
@@ -213,7 +214,7 @@ class GurobiBackend:
         constraints = [self._model.addConstr(gp.LinExpr() >= 1.0, name=f"cov_{c}")
                        for c in instance.customers]
         self._constraints = constraints
-        self._vars: list[object] = []
+        self._vars: list[Any] = []
         for col_idx, (cost, covers) in enumerate(seed_columns):
             column = gp.Column(
                 [1.0] * len(covers), [constraints[row_of_customer[c]] for c in covers]

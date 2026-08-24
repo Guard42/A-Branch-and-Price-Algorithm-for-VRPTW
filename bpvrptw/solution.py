@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any
 
 from .instance import VRPTWInstance
 
@@ -98,15 +99,13 @@ class RouteRecord:
                 "duration": self.duration}
 
     @classmethod
-    def from_dict(cls, data: dict[str, object]) -> RouteRecord:
-        """Restore from :meth:`to_dict` output."""
+    def from_dict(cls, data: dict[str, Any]) -> RouteRecord:
         return cls(
-            path=[int(v) for v in data["path"]],  # type: ignore[arg-type]
-            cost=float(data["cost"]),  # type: ignore[arg-type]
-            load=float(data["load"]),  # type: ignore[arg-type]
-            duration=float(data["duration"]),  # type: ignore[arg-type]
+            path=[int(v) for v in data["path"]],  # type: ignore[attr-defined]
+            cost=float(data["cost"]),
+            load=float(data["load"]),
+            duration=float(data["duration"]),
         )
-
 
 @dataclass(eq=True)
 class Solution:
@@ -165,18 +164,21 @@ class Solution:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, object]) -> Solution:
+    def from_dict(cls, data: dict[str, Any]) -> Solution:
         return cls(
             status=SolutionStatus(str(data["status"])),
-            routes=[RouteRecord.from_dict(r) for r in data.get("routes", [])],  # type: ignore[arg-type]
-            total_cost=float(data.get("total_cost", 0.0)),  # type: ignore[arg-type]
+            routes=[
+                RouteRecord.from_dict(r)  # type: ignore[arg-type]
+                for r in data.get("routes", [])
+            ],
+            total_cost=float(data.get("total_cost", 0.0)),
             lower_bound=(
                 None if data.get("lower_bound") is None
-                else float(data["lower_bound"])  # type: ignore[arg-type]
+                else float(data["lower_bound"])
             ),
             solve_time_seconds=(
                 None if data.get("solve_time_seconds") is None
-                else float(data["solve_time_seconds"])  # type: ignore[arg-type]
+                else float(data["solve_time_seconds"])
             ),
             instance_name=(
                 None if data.get("instance_name") is None

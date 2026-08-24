@@ -14,7 +14,7 @@ from . import __version__
 from ._util import setup_logging
 from .branch_and_price import BranchAndPrice
 from .instance import InstanceFormatError, VRPTWInstance
-from .solution import SolutionStatus
+from .solution import Solution, SolutionStatus
 
 
 def _solve_one(
@@ -24,8 +24,14 @@ def _solve_one(
     time_limit: float | None,
     gap: float,
     quiet: bool,
-) -> tuple[VRPTWInstance, object, int]:
+) -> tuple[VRPTWInstance | None, Solution | None, int]:
     """Solve one instance; returns (instance, Solution, exit_code)."""
+    try:
+        instance = VRPTWInstance.from_solomon(instance_path)
+    except InstanceFormatError as exc:
+        if not quiet:
+            print(f"[skip] {instance_path}: {exc}", file=sys.stderr)
+        return None, None, 2
     try:
         instance = VRPTWInstance.from_solomon(instance_path)
     except InstanceFormatError as exc:
@@ -73,6 +79,7 @@ def _cmd_solve(args: argparse.Namespace) -> int:
     if args.save_fig:
         from .visualization import plot_solution  # lazy: optional extra
 
+        assert instance is not None and solution is not None  # narrowed above
         plot_solution(instance, solution, save_path=args.save_fig, show=False)
         if not args.quiet:
             print(f"[fig] saved to {args.save_fig}")
