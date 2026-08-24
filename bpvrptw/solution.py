@@ -184,3 +184,7 @@ class Solution:
             ),
             meta=dict(data.get("meta", {})),  # type: ignore[arg-type]
         )
+
+
+#: Friendlier public alias for :class:`RouteRecord`.
+Route = RouteRecord
