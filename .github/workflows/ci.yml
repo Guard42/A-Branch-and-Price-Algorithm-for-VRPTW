@@ -24,4 +24,40 @@ jobs:
       - name: Lint (ruff)
         run: python -m ruff check .
       - name: Test (pytest)
+      - name: Types (mypy)
+        run: python -m mypy bpvrptw
+      - name: Docs links
+        run: python scripts/check_docs_links.py
+
+  smoke:
+    # End-to-end solve on a tiny instance with the license-free HiGHS path.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[plot]"
+      - name: Solve C101_25 end to end
+        run: |
+          mkdir -p artifacts
+          python -m bpvrptw solve dataset/C101_25.txt --time-limit 120 \
+            --output-json artifacts/c10125_smoke.json --quiet
+      - name: Assert optimal certificate
+        run: |
+          python - <<'EOF'
+          import json
+          d = json.load(open("artifacts/c10125_smoke.json"))
+          assert d["status"] == "SOLVED_OPTIMAL", d["status"]
+          assert abs(d["total_cost"] - 191.7) < 0.5, d["total_cost"]
+          print("smoke OK:", d["total_cost"])
+          EOF
+      - name: Upload smoke artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: c10125-smoke
+          path: artifacts/c10125_smoke.json
         run: python -m pytest -q
