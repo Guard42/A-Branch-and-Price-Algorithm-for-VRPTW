@@ -12,6 +12,7 @@ import sys
 import tempfile
 import traceback
 from pathlib import Path
+
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 FENCE = re.compile(r"```python\s+runnable\n(.*?)```", re.DOTALL)
@@ -28,7 +29,7 @@ def main() -> int:
         print("no ```python runnable blocks found in README.md", file=sys.stderr)
         return 1
     failures = 0
-    with tempfile.TemporaryDirectory() as td:
+    with tempfile.TemporaryDirectory():
         for idx, snippet in enumerate(snippets, start=1):
             try:
                 exec(compile(snippet, f"<readme-snippet-{idx}>", "exec"), {"__name__": "__main__"})  # noqa: S102

@@ -1,71 +1,222 @@
-# A-Branch-and-Price-Algorithm-for-VRPTW
-This Repo implements a branch-and-price algorithm for Vehicle Routing Problems with Time Windows using Python. (Gurobi license needed)
-![B&P solution for VRPTW on dataset R101](https://github.com/Guard42/A-Branch-and-Price-Algorithm-for-VRPTW/blob/main/fig/VRPTW_B&P_Sol_DatasetR101.png)
+# bpvrptw — Branch-and-Price for VRPTW
 
-# Contact
-If you have any questions regarding this repository, feel free to reach out.
-Author: Junwei Li([junweilee@njust.edu.cn](mailto:junweilee@njust.edu.cn))
+[![CI](https://github.com/Guard42/A-Branch-and-Price-Algorithm-for-VRPTW/actions/workflows/ci.yml/badge.svg)](https://github.com/Guard42/A-Branch-and-Price-Algorithm-for-VRPTW/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue)](pyproject.toml)
+[![License: GPL v3](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
+[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-261230)](pyproject.toml)
 
-# Updates
-* March 14, 2025: Upload code and data for the B&P algorithm to solve VRPTW.
+An **exact** branch-and-price solver for the Vehicle Routing Problem with
+Time Windows, packaged as a proper Python library — typed API, dual LP
+backends, bounded resources, and a test suite that verifies optimality
+against brute force.
 
-# Files
-**code**: Code for a branch and price algorithm to solve VRPTW
-- `branchBound.py`: Implements the Branch-and-Bound algorithm to solve Vehicle Routing Problems with Time Windows (VRPTW).
-- `columnGen.py`: Contains the column generation algorithm used in the Branch-and-Bound algorithm.
-- `paramsVRP.py`: Defines the parameter class for Vehicle Routing Problems (VRP), used for storing and processing parameters and data.
-- `route.py`: Defines the Route class, used to represent and manipulate vehicle routes.
-- `solVisualization.py`: Provides visualization functionality for displaying solutions to VRPTW.
-- `SPPRC.py`: Implements the label setting and label correcting algorithm t o solve the Shortest Path Problem with Resource Constraints, which will generate routes with negative cost to improve the objective function.
-- `main.py`: The main script file to run the Branch-and-Bound algorithm.
+![B&P solution for VRPTW on dataset C101](fig/VRPTW_B&P_Sol_DatasetC101.png)
 
-# Dataset
+> **一句话简介**：这是仓库初版（对 Java 项目 dengfaheng/BPVRPTW 的 AI 移植）
+> 的库级重写：类型化 API、HiGHS/Gurobi 双后端、有界资源、暴力对拍测试。
+> 旧实现按字节原样封存在 [`legacy/`](legacy/README.md)，作为反面教材与学习笔记。
+> 算法细节见 [docs/algorithm.md](docs/algorithm.md)。
 
-This repository implements a Branch-and-Price algorithm to solve the Vehicle Routing Problem with Time Windows (VRPTW). The algorithm has been benchmarked using the Solomon dataset, a widely recognized set of instances in the field of vehicle routing problems.
+## What is this?
 
-## Solomon Dataset
+Branch-and-price = column generation (pricing out routes with negative
+reduced cost) embedded in branch-and-bound (branching on fractional edges).
+It solves VRPTW *to proven optimality* on small-to-medium instances. The
+implementation follows the classical Desaulniers/Solomon framework; the
+legacy code this repo started from is preserved under `legacy/` together
+with a defect catalogue (D1–D9) that every design decision here fixes.
 
-The Solomon dataset, introduced by Marius Solomon in 1987, comprises 56 instances designed to evaluate the performance of VRPTW algorithms. Each instance includes 100 customers and is categorized based on customer distribution and scheduling horizon. The dataset is divided into six distinct types: C1, C2, R1, R2, RC1, and RC2.
+## Features
 
-### Instance Categories
+- **Typed public API** (`py.typed`): `VRPTWInstance`, `Route`, `Solution`,
+  `BranchAndPrice`, `ESPPRCSolver`, … with JSON round-tripping.
+- **Dual LP backends**, one interface: [HiGHS](https://highs.dev) by default
+  (Apache/MIT, license-free, CI-friendly); Gurobi optional via `[gurobi]`.
+- **Warm-started incremental RMP**: one persistent model per search node,
+  columns appended in place — no rebuild-per-iteration.
+- **Best-first bounded ESPPRC pricing** with Feillet-style pruning; hard
+  caps degrade gracefully instead of hanging.
+- **Deterministic** results: fixed iteration orders, seeded solvers,
+  single-threaded LP.
+- **Verified**: pricing soundness + optimal minimum cross-checked against
+  brute-force enumeration; branch-and-price matched against an exact DP on
+  tiny instances; C101_25 reproduces the known optimum with certificate.
+- **CLI & harness**: `python -m bpvrptw solve|bench`, JSON/CSV outputs,
+  headless plotting.
 
-1. **C-Type (Clustered Customers)**
-   - **C1:** Features clustered customer locations with narrow time windows and small vehicle capacities, leading to solutions with more routes and fewer customers per route.
-   - **C2:** Similar to C1 but with larger time windows and vehicle capacities, resulting in fewer routes with more customers per route.
+## Installation
 
-2. **R-Type (Randomly Distributed Customers)**
-   - **R1:** Contains randomly distributed customers with narrow time windows and small vehicle capacities, leading to solutions with more routes and fewer customers per route.
-   - **R2:** Similar to R1 but with larger time windows and vehicle capacities, resulting in fewer routes with more customers per route.
+```bash
+git clone https://github.com/Guard42/A-Branch-and-Price-Algorithm-for-VRPTW
+cd A-Branch-and-Price-Algorithm-for-VRPTW
+pip install -e .            # core (numpy + highspy only)
+pip install -e ".[plot]"    # + matplotlib for figures
+pip install -e ".[gurobi]"  # + optional Gurobi backend (needs a license)
+pip install -e ".[dev,plot]"  # everything for developing
+```
 
-3. **RC-Type (Mixed Distribution of Customers)**
-   - **RC1:** Combines both clustered and randomly distributed customers with narrow time windows and small vehicle capacities, leading to solutions with more routes and fewer customers per route.
-   - **RC2:** Similar to RC1 but with larger time windows and vehicle capacities, resulting in fewer routes with more customers per route.
+Gurobi is entirely optional: the RMP here is a small LP and HiGHS does it
+just as well without a license. See the FAQ below for why we do not embed
+column generation into Gurobi callbacks.
 
-Each instance file is named to reflect its category and specific characteristics. For example, `c101.txt` indicates a C1-type instance, while `r201.txt` corresponds to an R2-type instance.
+## Quickstart
 
-## Benchmark Testing
+CLI:
 
+```bash
+python -m bpvrptw solve dataset/C101_25.txt --time-limit 300 --output-json result.json --save-fig solution.png
+python -m bpvrptw bench dataset --time-limit 45 --json bench.json --csv bench.csv
+```
 
-Results on several datasets are documented in the `fig` directory and the B&P algorithm is proved efficient in solving the VRPTW (in some scenarios). **DO NOTICE** that though B&P is a efficient algorithm, its solving time for large scale dataset (with 100+ client nodes) will be huge.
+Python API:
 
-**PLEASE DO NOTE** that The algorithm have not been tested across all instance types (`c101.txt` to `rc208.txt`). And It is confirmed that the algorithm solving SPPRC will end up into a dead cycle when solving dataset `c104.txt`. But unfortunately this repo will not be updated regarding this issue in the near future and we welcome commits dedicated to solving this bug.
+```python runnable
+import tempfile
+from pathlib import Path
 
-For further details on the Solomon dataset and its applications, please refer to the original publication by Marius Solomon.
+import bpvrptw
+from tests.conftest import write_solomon, TINY_DEPOT, TINY_CUSTOMERS
 
-# Environment Requirements
-To set up the required environment, install the dependencies listed in the `requirements.txt` file:
+tmp = Path(tempfile.mkdtemp())
+path = write_solomon(tmp, "DEMO", vehicle_count=4, capacity=100.0,
+                     depot_row=TINY_DEPOT, customers_rows=TINY_CUSTOMERS[:3])
+
+solution = bpvrptw.solve(path, time_limit_seconds=60)
+print(solution.status.value, f"{solution.total_cost:.2f}",
+      f"{len(solution.routes)} routes")
+assert solution.status == bpvrptw.SolutionStatus.SOLVED_OPTIMAL
+```
+
+Lower-level control:
+
+```python runnable
+import tempfile
+from pathlib import Path
+
+from bpvrptw import BranchAndPrice, VRPTWInstance
+from tests.conftest import write_solomon, TINY_DEPOT, TINY_CUSTOMERS
+
+tmp = Path(tempfile.mkdtemp())
+path = write_solomon(tmp, "DEMO2", vehicle_count=4, capacity=100.0,
+                     depot_row=TINY_DEPOT, customers_rows=TINY_CUSTOMERS[:4])
+instance = VRPTWInstance.from_solomon(path)
+
+solver = BranchAndPrice(instance, lp_solver="highs", time_limit_seconds=120)
+solution = solver.solve()
+for route in solution.routes:
+    print(route.path, round(route.cost, 2))
+```
+
+## How the algorithm works
+
+The master problem is a set-partitioning LP over feasible routes; column
+generation prices new routes by solving an ESPPRC with a labeling
+algorithm (dominance rule, Feillet pruning, best-first ordering); the
+branch-and-bound tree branches on fractional edges when the LP solution is
+integral-infeasible. Full walkthrough with the mathematics:
+**[docs/algorithm.md](docs/algorithm.md)**.
+
+## Benchmarks
+
+Measured on the bundled Solomon subset (most files are 25-customer
+truncations; methodology in
+[docs/benchmarks.md](docs/benchmarks.md)):
+
+| Tier | Instances | Proven optimal | Honest time limits |
+|------|----------:|---------------:|-------------------:|
+| 45 s sweep  | 58 | 24 | 32 |
+| 45 s sweep  | 58 | 24 | 34 |
+| 300 s deep  | 12 selected | +3 (R102, RC205, C208) | 9 |
+Full per-instance table: **[docs/benchmarks.md](docs/benchmarks.md)**.
+Highlights: every C-family 25-customer instance → 191.7 / 215.6 proven
+optimal; `c104` — the instance that hung forever in the legacy port — now
+returns its incumbent cleanly inside its budget.
+
+## Fixes over the original port
+
+The initial version of this repo translated dengfaheng/BPVRPTW from Java;
+the translation introduced (and inherited) real defects. All of them are
+catalogued in [`legacy/README.md`](legacy/README.md) and fixed here:
+
+| ID | Legacy behaviour | Now |
+|----|------------------|-----|
+| D1/D9 | Labels processed/selected in insertion order | Best-first by reduced cost; most-negative columns first |
+| D2 | Dead comparator with undefined names (`A`/`B`) | No comparator; deterministic heap keys |
+| D3 | Imposing an arc into the depot blocked all other routes' returns | End-depot semantics unit-tested |
+| D4 | Whole Gurobi model deleted/rebuilt every CG iteration | Incremental columns, warm start retained |
+| D5 | Branching score indexed routes by vertex id | Ryan-Foster-style fractional-closeness score |
+| D6 | Prints everywhere, exceptions swallowed | Logging + typed errors |
+| D7 | Hardcoded absolute paths | None anywhere |
+| D8 | Unbounded loops → c104 hang | Bounded labels/time, graceful TIME_LIMIT |
+
+## Project layout
 
 ```
-pip install requirements.txt -r
+bpvrptw/            the library (instance, labeling, rmp, column_generation,
+                    branch_and_price, visualization, cli)
+tests/              pytest suite incl. brute-force references
+scripts/            benchmark harness and report checks
+docs/               algorithm walkthrough + benchmark report
+dataset/            Solomon instances bundled with this repo
+results/            committed benchmark outputs (JSON/CSV)
+legacy/             the original flat implementation, byte-identical,
+                    with its defect catalogue — do not develop there
+fig/                example solution figures
 ```
-In addition to installing all the dependencies for this program, you also need to have a Gurobi License on your computer.
 
-# Acknowledgement
-This work is largely based on the repo [dengfaheng/BPVRPTW](https://github.com/dengfaheng/BPVRPTW)
+## FAQ
 
-# References
+**Why not implement column generation inside Gurobi/CPLEX callbacks?**
+Because you cannot: callbacks do not re-enter a node after columns are
+added, MIP trees reject mid-search column additions, and node bounds are
+not manually controllable. The standard architecture — used by RouteOpt
+and the generic branch-cut-and-price literature — is to own the tree
+yourself and use the solver purely as an LP oracle. That is exactly what
+`BranchAndPrice` + `rmp.py` do; swapping HiGHS for Gurobi changes nothing
+else.
 
-- [Solomon's VRPTW Benchmark Problems](https://w.cba.neu.edu/~msolomon/problems.htm)
-- [运筹优化常用模型、算法及案例实战——Python+Java实现](http://www.tup.tsinghua.edu.cn/booksCenter/book_09109001.html)
-- [优化-详解资源受限的基本最短路问题(ESPPRC)-模型、复杂度证明及C++调用CPLEX代码实现](https://zhuanlan.zhihu.com/p/624558974)
-- [优化 | 详解标签算法求解资源受限的基本最短路问题(ESPPRC)【续】：理论、案例及C++实现](https://zhuanlan.zhihu.com/p/627964895)
+**Why is Gurobi not the default?**
+No philosophical objection — the RMP is a small LP and both backends pass
+identical dual-convention tests. HiGHS simply keeps `pip install -e .`
+license-free so anyone can clone, run the tests and get green CI.
+
+**What about SCIP?**
+SCIP genuinely supports pricing plugins and is the flexible option if you
+want the solver to drive the tree. For an educational Python library that
+is heavy machinery; the hand-written tree here is the teaching point.
+
+**Didn't c104 hang forever?**
+In the legacy port, yes (unbounded loops). Pricing now carries label/time
+caps and BP threads its deadline into every subproblem; c104 terminates
+with its incumbent and an honest TIME_LIMIT row in the benchmarks.
+
+**Can I use this for research?**
+It is an educational implementation: correctness-first, readability over
+throughput. For research-grade exact VRP solving see RouteOpt or the
+generic branch-cut-and-price framework of Pessoa et al.; you will want
+C++ pricing, ng-routes and dual stabilization.
+
+## Contributing
+
+```bash
+pip install -e ".[dev,plot]"
+python -m ruff check .
+python -m pytest -q
+```
+
+Please keep commits conventional (`feat:`, `fix:`, `docs:`, …), keep
+`legacy/` untouched, and add tests for behavioural changes. The referees
+that matter: ruff clean, full pytest green, README snippets runnable.
+
+## Acknowledgements
+
+- [dengfaheng/BPVRPTW](https://github.com/dengfaheng/BPVRPTW) — the Java
+  original this project was ported from (itself following M. Schyns'
+  educational implementation and the book 《运筹优化常用模型、算法及案例实战——Python+Java实现》).
+- [Solomon's VRPTW benchmarks](https://w.cba.neu.edu/~msolomon/problems.htm).
+- The zhihu ESPPRC article series (linked from the legacy README) that
+  accompanied the original learning effort.
+
+## License
+
+GPL-3.0-or-later — same as the upstream work this project derives from.

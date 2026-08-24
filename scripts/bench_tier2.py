@@ -12,9 +12,9 @@ from pathlib import Path
 WS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(WS))
 
-import bpvrptw
-from bpvrptw.branch_and_price import BranchAndPrice
-from bpvrptw.instance import VRPTWInstance
+import bpvrptw  # noqa: E402  (sys.path shim above)
+from bpvrptw.branch_and_price import BranchAndPrice  # noqa: E402
+from bpvrptw.instance import VRPTWInstance  # noqa: E402
 
 SELECTED = [
     "C103.txt", "C104.txt",          # the historical hang cases

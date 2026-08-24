@@ -1,0 +1,69 @@
+# Changelog
+
+All notable changes to this project are documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.1.0] - 2026-08-24
+
+First release of the library-grade rewrite. The original flat scripts are
+preserved **byte-identical** under [`legacy/`](legacy/README.md) as a
+teaching record of what went wrong (defects D1–D9 catalogued there).
+
+### Added
+
+- `bpvrptw` installable package (PEP 621 `pyproject.toml`, hatchling build,
+  `py.typed`, console script `bpvrptw`) replacing the flat-module layout.
+- Typed public API: `VRPTWInstance.from_solomon`, `Route`/`RouteRecord`,
+  `Solution`/`SolutionStatus`, `BranchAndPrice`, `ColumnGeneration`,
+  `ESPPRCSolver`, `plot_solution`, and a one-shot `solve()` convenience.
+- Pluggable RMP LP backends behind one interface: **HiGHS** (`highspy`)
+  by default — license-free, CI-friendly; **Gurobi** optional via the
+  `[gurobi]` extra. Both keep one persistent model per node and add
+  pricing columns incrementally, retaining the simplex warm start.
+- Bounded best-first ESPPRC pricing with Feillet-style pruning, graceful
+  `max_labels` / wall-clock caps, and deterministic behaviour.
+- Branch-and-price tree with Ryan-Foster-style fractional-edge selection,
+  correct end-depot branching semantics, integer-flow-aware integrality,
+  global lower-bound bookkeeping and optimality certificates.
+- CLI: `python -m bpvrptw solve|bench` with JSON/CSV outputs.
+- Headless-capable solution plotting (matplotlib optional `[plot]` extra).
+- Test suite (72+ tests): Solomon parsing regression, brute-force
+  enumeration cross-checks for pricing soundness, exact-optimum DP
+  cross-checks for branch-and-price on tiny instances, C101_25
+  integration certificate, CLI/visualization smoke tests.
+- Benchmark harness plus committed results under `results/` and a
+  methodology report in `docs/benchmarks.md`.
+- Documentation: rewritten README, algorithm walkthrough
+  (`docs/algorithm.md`), this changelog.
+- CI workflow (ruff + pytest on Python 3.11/3.12) that needs no Gurobi
+  credentials.
+
+### Changed
+
+- **BREAKING:** flat modules moved unchanged into `legacy/`
+  (`paramsVRP.py`, `route.py`, `SPPRC.py`, `columnGen.py`,
+  `branchBound.py`, `main.py`, `solVisualization.py`). Import from the
+  `bpvrptw` package instead.
+- **BREAKING:** `requirements.txt` removed in favour of `pyproject.toml`.
+- Default LP solver is HiGHS; Gurobi is opt-in. Rationale in the README FAQ.
+
+### Fixed (vs. the legacy port)
+
+- D1/D9 — label processing/column selection ordered by reduced cost
+  (was: insertion order), restoring best-first search and most-negative-
+  first column selection.
+- D2 — removed the dead comparator whose `__lt__` referenced undefined
+  names and whose `__eq__` was wrong.
+- D3 — imposing an arc INTO the end depot no longer forbids every other
+  route's return arc (end-depot index guard fixed for Python indexing).
+- D4 — column generation no longer deletes/rebuilds the whole model every
+  iteration (warm start retained).
+- D5 — branching heuristic no longer indexes a route list by vertex id;
+  replaced by a principled score.
+- D6 — library code logs instead of printing and raises typed errors
+  instead of swallowing exceptions.
+- D7 — no hardcoded absolute paths anywhere.
+- D8 — bounded resources everywhere; the historical c104 hang now ends
+  cleanly within its time/label budget (see `docs/benchmarks.md`).

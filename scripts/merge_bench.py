@@ -6,6 +6,7 @@ import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
 WS = Path(__file__).resolve().parents[1]
 
 tier1 = json.loads((WS / "results" / "bench_tier1.json").read_text(encoding="utf-8"))
