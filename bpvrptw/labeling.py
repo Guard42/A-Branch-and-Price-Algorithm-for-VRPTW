@@ -121,16 +121,33 @@ class ESPPRCSolver:
         instance: The VRPTW instance to price on.
         reduced_costs: Optional arc cost matrix overriding ``instance.dist``
             as the arc objective (column generation passes ``dist - pi``).
-            Feasibility always uses the instance resources.
     """
-
     def __init__(
         self,
         instance: VRPTWInstance,
         reduced_costs: np.ndarray | None = None,
+        *,
+        arc_allowed: np.ndarray | None = None,
     ) -> None:
+        """Create a pricing solver.
+
+        Args:
+            instance: The VRPTW instance to price on.
+            reduced_costs: Optional arc objective overriding ``instance.dist``
+                (column generation passes ``dist - pi``).
+            arc_allowed: Optional boolean matrix of admissible arcs (used by
+                branch-and-price to encode forbidden arcs). When given,
+                Feillet-style pruning is disabled: with forbidden arcs the
+                triangle-inequality argument that makes pruning safe no
+                longer holds.
+        """
         self._instance = instance
         self._rc = instance.dist if reduced_costs is None else np.asarray(reduced_costs)
+        # An all-True matrix is semantically "no restriction"; normalizing
+        # it to None keeps Feillet pruning active at the root node.
+        if arc_allowed is not None and bool(np.all(arc_allowed)):
+            arc_allowed = None
+        self._arc_allowed = arc_allowed
 
     def solve(
         self,
@@ -189,6 +206,15 @@ class ESPPRCSolver:
 
         def _prune_mask(mask: int, city: int, arrival: float, load: float) -> int:
             """Feillet-style: mark customers unreachable from here as visited."""
+            if self._arc_allowed is not None:
+                return mask  # unsafe under forbidden arcs; keep completeness
+            for k in customer_range:
+                if not (mask >> k) & 1:
+                    earliest = arrival + float(dist[city, k]) / speed + service[city]
+                    if earliest > due[k] + _EPS or load + demand[k] > capacity + _EPS:
+                        mask |= 1 << k
+            return mask
+
             for k in customer_range:
                 if not (mask >> k) & 1:
                     earliest = arrival + float(dist[city, k]) / speed + service[city]
@@ -246,6 +272,11 @@ class ESPPRCSolver:
             for j in range(n):
                 if j == base_city or j == start or (label.mask >> j) & 1:
                     continue
+                if (
+                    self._arc_allowed is not None
+                    and not self._arc_allowed[base_city, j]
+                ):
+                    continue  # branching forbade this arc
                 if base_city == start and j == end:
                     continue  # a route needs at least one customer
                 arrival = base_time + float(dist[base_city, j]) / speed + service[base_city]
