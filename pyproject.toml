@@ -4,11 +4,23 @@ build-backend = "hatchling.build"
 
 [project]
 name = "bpvrptw"
-version = "0.1.0"
+version = "0.1.1"
 description = "Branch-and-Price exact solver for VRPTW (educational)"
+readme = "README.md"
 authors = [{ name = "Junwei Li" }]
 license = { text = "GPL-3.0-or-later" }
 requires-python = ">=3.10"
+keywords = ["vehicle-routing", "vrptw", "branch-and-price", "column-generation", "or-tools"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+[project.urls]
+Homepage = "https://github.com/Guard42/A-Branch-and-Price-Algorithm-for-VRPTW"
+Bug-Tracker = "https://github.com/Guard42/A-Branch-and-Price-Algorithm-for-VRPTW/issues"
 dependencies = [
     "numpy>=1.24",
     "highspy>=1.7",
