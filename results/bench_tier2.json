@@ -1,0 +1,108 @@
+{
+  "meta": {
+    "generated_at": "2026-08-24T14:56:39.754242+00:00",
+    "bpvrptw_version": "0.1.0",
+    "time_limit_s": 300.0,
+    "lp_solver": "auto",
+    "python": "3.12.8",
+    "platform": "Windows-11-10.0.26200-SP0"
+  },
+  "rows": [
+    {
+      "instance": "C103.txt",
+      "status": "TIME_LIMIT",
+      "total_cost": 1132.4,
+      "routes": 25,
+      "lower_bound": 1132.4,
+      "solve_time_seconds": 300.076
+    },
+    {
+      "instance": "C104.txt",
+      "status": "TIME_LIMIT",
+      "total_cost": 1132.4,
+      "routes": 25,
+      "lower_bound": 1132.4,
+      "solve_time_seconds": 300.047
+    },
+    {
+      "instance": "C202.txt",
+      "status": "TIME_LIMIT",
+      "total_cost": 1275.4,
+      "routes": 25,
+      "lower_bound": 1275.4000000000003,
+      "solve_time_seconds": 300.108
+    },
+    {
+      "instance": "C208.txt",
+      "status": "SOLVED_OPTIMAL",
+      "total_cost": 215.4,
+      "routes": 2,
+      "lower_bound": 215.4,
+      "solve_time_seconds": 40.294
+    },
+    {
+      "instance": "R102.txt",
+      "status": "SOLVED_OPTIMAL",
+      "total_cost": 547.9,
+      "routes": 7,
+      "lower_bound": 547.9,
+      "solve_time_seconds": 38.667
+    },
+    {
+      "instance": "R106.txt",
+      "status": "TIME_LIMIT",
+      "total_cost": 1245.8,
+      "routes": 25,
+      "lower_bound": 458.20000000000005,
+      "solve_time_seconds": 300.06
+    },
+    {
+      "instance": "R201.txt",
+      "status": "TIME_LIMIT",
+      "total_cost": 1245.8,
+      "routes": 25,
+      "lower_bound": 461.3,
+      "solve_time_seconds": 300.082
+    },
+    {
+      "instance": "R207.txt",
+      "status": "TIME_LIMIT",
+      "total_cost": 1245.8,
+      "routes": 25,
+      "lower_bound": 1245.8,
+      "solve_time_seconds": 300.068
+    },
+    {
+      "instance": "RC202.txt",
+      "status": "TIME_LIMIT",
+      "total_cost": 1887.0,
+      "routes": 25,
+      "lower_bound": 1887.0,
+      "solve_time_seconds": 300.061
+    },
+    {
+      "instance": "RC205.txt",
+      "status": "SOLVED_OPTIMAL",
+      "total_cost": 339.1,
+      "routes": 3,
+      "lower_bound": 339.1,
+      "solve_time_seconds": 291.61
+    },
+    {
+      "instance": "RC207.txt",
+      "status": "TIME_LIMIT",
+      "total_cost": 1887.0,
+      "routes": 25,
+      "lower_bound": 1887.0,
+      "solve_time_seconds": 300.101
+    },
+    {
+      "instance": "RC208.txt",
+      "status": "TIME_LIMIT",
+      "total_cost": 1887.0,
+      "routes": 25,
+      "lower_bound": 1887.0,
+      "solve_time_seconds": 300.243
+    }
+  ]
+}
