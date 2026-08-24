@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated_at": "2026-08-24T18:27:30.526809+00:00",
+    "generated_at": "2026-08-24T21:20:26.702137+00:00",
     "bpvrptw_version": "0.1.0",
     "tiers": {
       "tier1": {
@@ -22,7 +22,7 @@
       "total_cost": 191.7,
       "routes": 3,
       "lower_bound": 191.70000000000002,
-      "solve_time_seconds": 0.736
+      "solve_time_seconds": 0.294
     },
     {
       "instance": "C102.txt",
@@ -30,7 +30,7 @@
       "total_cost": 190.6,
       "routes": 3,
       "lower_bound": 190.6,
-      "solve_time_seconds": 17.91
+      "solve_time_seconds": 10.61
     },
     {
       "instance": "C103.txt",
@@ -38,7 +38,7 @@
       "total_cost": 1132.4,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 300.054
+      "solve_time_seconds": 300.061
     },
     {
       "instance": "C104.txt",
@@ -46,7 +46,7 @@
       "total_cost": 1132.4,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 300.12
+      "solve_time_seconds": 300.082
     },
     {
       "instance": "C105.txt",
@@ -54,7 +54,7 @@
       "total_cost": 191.7,
       "routes": 3,
       "lower_bound": 191.70000000000002,
-      "solve_time_seconds": 0.589
+      "solve_time_seconds": 0.285
     },
     {
       "instance": "C106.txt",
@@ -62,7 +62,7 @@
       "total_cost": 191.7,
       "routes": 3,
       "lower_bound": 191.70000000000002,
-      "solve_time_seconds": 0.492
+      "solve_time_seconds": 0.237
     },
     {
       "instance": "C107.txt",
@@ -70,7 +70,7 @@
       "total_cost": 191.7,
       "routes": 3,
       "lower_bound": 191.70000000000002,
-      "solve_time_seconds": 1.041
+      "solve_time_seconds": 0.492
     },
     {
       "instance": "C108.txt",
@@ -78,7 +78,7 @@
       "total_cost": 191.7,
       "routes": 3,
       "lower_bound": 191.70000000000002,
-      "solve_time_seconds": 2.123
+      "solve_time_seconds": 1.045
     },
     {
       "instance": "C109.txt",
@@ -86,7 +86,7 @@
       "total_cost": 191.7,
       "routes": 3,
       "lower_bound": 191.70000000000002,
-      "solve_time_seconds": 8.588
+      "solve_time_seconds": 4.473
     },
     {
       "instance": "C110_1.TXT",
@@ -94,7 +94,7 @@
       "total_cost": 402788.0,
       "routes": 1000,
       "lower_bound": null,
-      "solve_time_seconds": 45.114
+      "solve_time_seconds": 45.162
     },
     {
       "instance": "C201.txt",
@@ -102,7 +102,7 @@
       "total_cost": 215.6,
       "routes": 2,
       "lower_bound": 215.6,
-      "solve_time_seconds": 1.603
+      "solve_time_seconds": 1.056
     },
     {
       "instance": "C202.txt",
@@ -110,7 +110,7 @@
       "total_cost": 1275.4,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 300.092
+      "solve_time_seconds": 300.032
     },
     {
       "instance": "C203.txt",
@@ -118,7 +118,7 @@
       "total_cost": 1275.4,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 45.025
+      "solve_time_seconds": 45.04
     },
     {
       "instance": "C204.txt",
@@ -126,7 +126,7 @@
       "total_cost": 1275.4,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 45.027
+      "solve_time_seconds": 45.043
     },
     {
       "instance": "C205.txt",
@@ -134,7 +134,7 @@
       "total_cost": 215.6,
       "routes": 2,
       "lower_bound": 215.6,
-      "solve_time_seconds": 5.756
+      "solve_time_seconds": 6.046
     },
     {
       "instance": "C206.txt",
@@ -142,7 +142,7 @@
       "total_cost": 215.6,
       "routes": 2,
       "lower_bound": 215.6,
-      "solve_time_seconds": 8.911
+      "solve_time_seconds": 10.971
     },
     {
       "instance": "C207.txt",
@@ -150,7 +150,7 @@
       "total_cost": 1275.4,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 45.032
+      "solve_time_seconds": 45.053
     },
     {
       "instance": "C208.txt",
@@ -158,7 +158,7 @@
       "total_cost": 215.4,
       "routes": 2,
       "lower_bound": 215.4,
-      "solve_time_seconds": 89.71
+      "solve_time_seconds": 64.808
     },
     {
       "instance": "R101.txt",
@@ -166,7 +166,7 @@
       "total_cost": 618.1,
       "routes": 8,
       "lower_bound": 618.0999999999999,
-      "solve_time_seconds": 0.029
+      "solve_time_seconds": 0.022
     },
     {
       "instance": "R102.txt",
@@ -174,7 +174,7 @@
       "total_cost": 547.9,
       "routes": 7,
       "lower_bound": 547.9,
-      "solve_time_seconds": 82.467
+      "solve_time_seconds": 51.188
     },
     {
       "instance": "R103.txt",
@@ -182,7 +182,7 @@
       "total_cost": 455.6,
       "routes": 5,
       "lower_bound": 455.6,
-      "solve_time_seconds": 2.293
+      "solve_time_seconds": 3.882
     },
     {
       "instance": "R104.txt",
@@ -190,7 +190,7 @@
       "total_cost": 418.0,
       "routes": 4,
       "lower_bound": 418.0,
-      "solve_time_seconds": 14.177
+      "solve_time_seconds": 18.83
     },
     {
       "instance": "R105.txt",
@@ -198,7 +198,7 @@
       "total_cost": 531.3,
       "routes": 6,
       "lower_bound": 531.3,
-      "solve_time_seconds": 0.077
+      "solve_time_seconds": 0.066
     },
     {
       "instance": "R106.txt",
@@ -206,7 +206,7 @@
       "total_cost": 1245.8,
       "routes": 25,
       "lower_bound": 458.20000000000005,
-      "solve_time_seconds": 300.183
+      "solve_time_seconds": 300.13
     },
     {
       "instance": "R107.txt",
@@ -214,7 +214,7 @@
       "total_cost": 425.3,
       "routes": 4,
       "lower_bound": 425.3,
-      "solve_time_seconds": 4.343
+      "solve_time_seconds": 4.581
     },
     {
       "instance": "R108.txt",
@@ -222,7 +222,7 @@
       "total_cost": 1245.8,
       "routes": 25,
       "lower_bound": 397.79411764705884,
-      "solve_time_seconds": 45.057
+      "solve_time_seconds": 45.076
     },
     {
       "instance": "R109.txt",
@@ -230,7 +230,7 @@
       "total_cost": 442.7,
       "routes": 5,
       "lower_bound": 442.7,
-      "solve_time_seconds": 0.353
+      "solve_time_seconds": 0.313
     },
     {
       "instance": "R110.txt",
@@ -238,7 +238,7 @@
       "total_cost": 1245.8,
       "routes": 25,
       "lower_bound": 439.375,
-      "solve_time_seconds": 45.033
+      "solve_time_seconds": 45.072
     },
     {
       "instance": "R111.txt",
@@ -246,7 +246,7 @@
       "total_cost": 1245.8,
       "routes": 25,
       "lower_bound": 428.26,
-      "solve_time_seconds": 45.039
+      "solve_time_seconds": 45.08
     },
     {
       "instance": "R112.txt",
@@ -254,7 +254,7 @@
       "total_cost": 1245.8,
       "routes": 25,
       "lower_bound": 388.15000000000003,
-      "solve_time_seconds": 45.055
+      "solve_time_seconds": 45.04
     },
     {
       "instance": "R201.txt",
@@ -262,7 +262,7 @@
       "total_cost": 1245.8,
       "routes": 25,
       "lower_bound": 461.3,
-      "solve_time_seconds": 300.128
+      "solve_time_seconds": 300.071
     },
     {
       "instance": "R202.txt",
@@ -270,7 +270,7 @@
       "total_cost": 1245.8,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 45.021
+      "solve_time_seconds": 45.016
     },
     {
       "instance": "R203.txt",
@@ -278,7 +278,7 @@
       "total_cost": 1245.8,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 45.053
+      "solve_time_seconds": 45.054
     },
     {
       "instance": "R204.txt",
@@ -286,7 +286,7 @@
       "total_cost": 1245.8,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 45.044
+      "solve_time_seconds": 45.07
     },
     {
       "instance": "R205.txt",
@@ -294,7 +294,7 @@
       "total_cost": 1245.8,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 45.005
+      "solve_time_seconds": 45.023
     },
     {
       "instance": "R206.txt",
@@ -302,7 +302,7 @@
       "total_cost": 1245.8,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 45.023
+      "solve_time_seconds": 45.055
     },
     {
       "instance": "R207.txt",
@@ -310,7 +310,7 @@
       "total_cost": 1245.8,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 300.08
+      "solve_time_seconds": 300.05
     },
     {
       "instance": "R208.txt",
@@ -318,7 +318,7 @@
       "total_cost": 1245.8,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 45.042
+      "solve_time_seconds": 45.091
     },
     {
       "instance": "R209.txt",
@@ -326,7 +326,7 @@
       "total_cost": 1245.8,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 45.017
+      "solve_time_seconds": 45.028
     },
     {
       "instance": "R210.txt",
@@ -334,7 +334,7 @@
       "total_cost": 1245.8,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 45.045
+      "solve_time_seconds": 45.07
     },
     {
       "instance": "R211.txt",
@@ -342,7 +342,7 @@
       "total_cost": 1245.8,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 45.017
+      "solve_time_seconds": 45.036
     },
     {
       "instance": "RC101.txt",
@@ -350,7 +350,7 @@
       "total_cost": 1887.0,
       "routes": 25,
       "lower_bound": 409.375,
-      "solve_time_seconds": 45.009
+      "solve_time_seconds": 45.019
     },
     {
       "instance": "RC102.txt",
@@ -358,7 +358,7 @@
       "total_cost": 352.9,
       "routes": 3,
       "lower_bound": 352.9,
-      "solve_time_seconds": 0.574
+      "solve_time_seconds": 0.845
     },
     {
       "instance": "RC103.txt",
@@ -366,7 +366,7 @@
       "total_cost": 334.2,
       "routes": 3,
       "lower_bound": 334.20000000000005,
-      "solve_time_seconds": 3.273
+      "solve_time_seconds": 5.876
     },
     {
       "instance": "RC104.txt",
@@ -374,7 +374,7 @@
       "total_cost": 307.2,
       "routes": 3,
       "lower_bound": 307.20000000000005,
-      "solve_time_seconds": 16.891
+      "solve_time_seconds": 30.963
     },
     {
       "instance": "RC105.txt",
@@ -382,7 +382,7 @@
       "total_cost": 412.4,
       "routes": 4,
       "lower_bound": 412.40000000000003,
-      "solve_time_seconds": 0.546
+      "solve_time_seconds": 0.966
     },
     {
       "instance": "RC106.txt",
@@ -390,7 +390,7 @@
       "total_cost": 346.6,
       "routes": 3,
       "lower_bound": 346.6,
-      "solve_time_seconds": 0.398
+      "solve_time_seconds": 0.678
     },
     {
       "instance": "RC107.txt",
@@ -398,7 +398,7 @@
       "total_cost": 299.1,
       "routes": 3,
       "lower_bound": 299.1,
-      "solve_time_seconds": 2.184
+      "solve_time_seconds": 3.22
     },
     {
       "instance": "RC108.txt",
@@ -406,7 +406,7 @@
       "total_cost": 295.0,
       "routes": 3,
       "lower_bound": 295.0,
-      "solve_time_seconds": 8.172
+      "solve_time_seconds": 15.686
     },
     {
       "instance": "RC201.txt",
@@ -414,7 +414,7 @@
       "total_cost": 361.4,
       "routes": 3,
       "lower_bound": 361.4,
-      "solve_time_seconds": 2.311
+      "solve_time_seconds": 3.601
     },
     {
       "instance": "RC202.txt",
@@ -422,7 +422,7 @@
       "total_cost": 1887.0,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 300.046
+      "solve_time_seconds": 300.039
     },
     {
       "instance": "RC203.txt",
@@ -430,7 +430,7 @@
       "total_cost": 1887.0,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 45.04
+      "solve_time_seconds": 45.065
     },
     {
       "instance": "RC204.txt",
@@ -438,7 +438,7 @@
       "total_cost": 1887.0,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 45.029
+      "solve_time_seconds": 45.042
     },
     {
       "instance": "RC205.txt",
@@ -446,7 +446,7 @@
       "total_cost": 339.1,
       "routes": 3,
       "lower_bound": 339.1,
-      "solve_time_seconds": 213.872
+      "solve_time_seconds": 276.02
     },
     {
       "instance": "RC206.txt",
@@ -454,7 +454,7 @@
       "total_cost": 1887.0,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 45.029
+      "solve_time_seconds": 45.051
     },
     {
       "instance": "RC207.txt",
@@ -462,7 +462,7 @@
       "total_cost": 1887.0,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 300.199
+      "solve_time_seconds": 300.084
     },
     {
       "instance": "RC208.txt",
@@ -470,15 +470,15 @@
       "total_cost": 1887.0,
       "routes": 25,
       "lower_bound": null,
-      "solve_time_seconds": 300.068
+      "solve_time_seconds": 300.057
     },
     {
       "instance": "c101.txt",
-      "status": "TIME_LIMIT",
-      "total_cost": 5770.8,
-      "routes": 100,
-      "lower_bound": null,
-      "solve_time_seconds": 45.005
+      "status": "SOLVED_OPTIMAL",
+      "total_cost": 828.7,
+      "routes": 10,
+      "lower_bound": 828.6999999999999,
+      "solve_time_seconds": 32.91
     }
   ]
 }
