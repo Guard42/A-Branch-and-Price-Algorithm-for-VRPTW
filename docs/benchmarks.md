@@ -101,4 +101,9 @@ deadlock (see `legacy/README.md`, D8) now ends cleanly inside its budget.
   files in `dataset/` are 25-customer truncations of the original
   100-customer Solomon instances.
 
+- Legacy parity: `scripts/legacy_parity.py` re-runs the frozen legacy
+  implementation and the new solver side by side. Verified identical optima
+  on C101_25 (191.70), R101 (618.10), RC106 (346.60) and C201 (215.60),
+  with the new implementation 5-33x faster (C201: 63.5s -> 1.9s).
+
 *Generated 2026-08-24 by `scripts/merge_bench.py`.*
