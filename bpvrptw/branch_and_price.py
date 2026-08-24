@@ -134,6 +134,48 @@ def _select_branch_edge(
     return best_edge
 
 
+def _maybe_record_incumbent(
+    ctx: _BPContext,
+    result: object,
+    verbose: bool,
+    depth: int,
+) -> bool:
+    """Record the node's primal solution as incumbent when integral.
+
+    Returns True when an incumbent was recorded. Used both for fully
+    converged integer nodes and for partially converged nodes whose primal
+    happens to be integral (the solution itself is feasible; only its
+    *bound* would be unsound).
+    """
+    n = ctx.instance.total_vertices
+    edges = np.zeros((n, n))
+    for record, value in result.column_values:
+        if value > 1e-6:
+            for a, b in zip(record.path, record.path[1:], strict=False):
+                edges[a, b] += value
+    fractional = [
+        (i, j)
+        for i in range(n)
+        for j in range(n)
+        if edges[i, j] > 1e-6 and abs(edges[i, j] - round(edges[i, j])) >= 1e-8
+    ]
+    if fractional:
+        return False
+    selected = [r for r, v in result.column_values if v > 1e-6]
+    total = sum(r.cost for r in selected)
+    if total < ctx.upperbound:
+        ctx.upperbound = total
+        ctx.best_routes = [copy.deepcopy(r) for r in selected]
+        if verbose:
+            _logger.info(
+                "INCUMBENT | UB=%.6f depth=%d nodes=%d",
+                ctx.upperbound, depth, ctx.nodes_visited,
+            )
+    elif verbose:
+        _logger.info("FEAS | UB=%.6f depth=%d", ctx.upperbound, depth)
+    return True
+
+
 def _path_uses_arc(route: RouteRecord, i: int, j: int) -> bool:
     return any(a == i and b == j for a, b in zip(route.path, route.path[1:], strict=False))
 
@@ -236,8 +278,16 @@ class BranchAndPrice:
                 node.lowest_value = 1e11
                 return True
 
-            node.lowest_value = result.objective
+            if result.status != "optimal":
+                # Pricing did not run to exhaustion: the current RMP objective
+                # is NOT a valid global lower bound. Record an integral
+                # incumbent if the partial solution happens to be integral,
+                # then stop descending -- branching on unproven bounds would
+                # make every downstream claim unsound.
+                _maybe_record_incumbent(ctx, result, self._verbose, depth)
+                return True
 
+            node.lowest_value = result.objective
             # Global lower-bound bookkeeping (identical structure to legacy).
             if (
                 node.father is not None
@@ -272,20 +322,8 @@ class BranchAndPrice:
                 if edges[i, j] > 1e-6 and abs(edges[i, j] - round(edges[i, j])) >= 1e-8
             ]
             if not fractional:
-                selected = [r for r, v in result.column_values if v > 1e-6]
-                total = sum(r.cost for r in selected)
-                if total < ctx.upperbound:
-                    ctx.upperbound = total
-                    ctx.best_routes = [copy.deepcopy(r) for r in selected]
-                    if self._verbose:
-                        _logger.info(
-                            "OPT | LB=%.6f UB=%.6f depth=%d nodes=%d",
-                            ctx.lowerbound, ctx.upperbound, depth, ctx.nodes_visited,
-                        )
-                elif self._verbose:
-                    _logger.info("FEAS | UB=%.6f depth=%d", ctx.upperbound, depth)
+                _maybe_record_incumbent(ctx, result, self._verbose, depth)
                 return True
-
             bf, bt = _select_branch_edge(edges, inst.dist) or fractional[0]
             coef = edges[bf, bt]
             best_val = 0 if abs(1.0 - coef) > coef else 1
@@ -345,21 +383,52 @@ class BranchAndPrice:
             return ok2
 
         root = _TreeNode(toplevel=True)
+
+        # Initial incumbent: the all-single-customer solution (every feasible
+        # seed route used once). Guarantees a feasible UB for instances where
+        # the search cannot reach any integer node before its deadline.
+        if seed_routes:
+            ctx.upperbound = sum(r.cost for r in seed_routes)
+            ctx.best_routes = list(seed_routes)
+
         _node(root, inst.dist.copy(), list(seed_routes), 0)
 
         timed_out = ctx.deadline is not None and time.perf_counter() > ctx.deadline
-        if ctx.best_routes:
-            status = (
-                SolutionStatus.TIME_LIMIT if timed_out else SolutionStatus.SOLVED_OPTIMAL
-            )
-        else:
+        lb_valid = ctx.lowerbound > -1e9
+        gap_closed = (
+            lb_valid
+            and bool(ctx.best_routes)
+            and (ctx.upperbound - ctx.lowerbound) / max(abs(ctx.upperbound), 1e-10)
+            < self._gap
+        )
+        if not ctx.best_routes:
             status = SolutionStatus.INFEASIBLE
+        elif gap_closed and not timed_out:
+            status = SolutionStatus.SOLVED_OPTIMAL
+        elif timed_out:
+            status = SolutionStatus.TIME_LIMIT
+        else:
+            status = SolutionStatus.SOLVED_FEASIBLE
         return Solution(
             status=status,
             routes=list(ctx.best_routes),
             total_cost=sum(r.cost for r in ctx.best_routes),
-            lower_bound=ctx.lowerbound if ctx.lowerbound > -1e9 else None,
+            lower_bound=ctx.lowerbound if lb_valid else None,
             solve_time_seconds=time.perf_counter() - ctx.started,
             instance_name=inst.name,
-            meta={"bb_nodes": ctx.nodes_visited, "lp_solver": ctx.lp_solver},
+            meta={
+                "bb_nodes": ctx.nodes_visited,
+                "lp_solver": ctx.lp_solver,
+                "gap_closed": gap_closed,
+                "gap_pct": (
+                    None
+                    if not lb_valid or not ctx.best_routes
+                    else max(
+                        0.0,
+                        (ctx.upperbound - ctx.lowerbound)
+                        / max(abs(ctx.upperbound), 1e-10)
+                        * 100.0,
+                    )
+                ),
+            },
         )
