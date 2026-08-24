@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -41,20 +42,31 @@ final = {
     json.dumps(final, indent=2), encoding="utf-8"
 )
 
+# Gap computation: gap = (UB - LB) / |UB| * 100 when a sound lower bound
+# exists; otherwise '-'. OPTIMAL rows carry a closed-gap certificate.
+for row in final["rows"]:
+    cost = row.get("total_cost")
+    lb = row.get("lower_bound")
+    if cost is not None and lb is not None and abs(cost) > 1e-12:
+        row["gap_pct"] = round(max(0.0, (cost - lb) / abs(cost) * 100.0), 3)
+    else:
+        row["gap_pct"] = None
+
 # Markdown table grouped by family.
 lines = [
-    "| Instance | Status | Cost | Routes | Lower bound | Time (s) |",
-    "|----------|--------|------:|-------:|------------:|---------:|",
+    "| Instance | Status | Cost | Routes | Lower bound | Gap (%) | Time (s) |",
+    "|----------|--------|------:|-------:|------------:|--------:|---------:|",
 ]
 for row in final["rows"]:
     cost = "-" if row["total_cost"] is None else f"{row['total_cost']:.2f}"
     lb = "-" if row.get("lower_bound") is None else f"{row['lower_bound']:.2f}"
     routes = "-" if row["routes"] is None else str(row["routes"])
+    gap = "-" if row.get("gap_pct") is None else f"{row['gap_pct']:.3f}"
     status = row["status"].replace("SOLVED_OPTIMAL", "**OPTIMAL**") \
                           .replace("TIME_LIMIT", "time limit")
     lines.append(
         f"| `{row['instance']}` | {status} | {cost} | {routes} | {lb} "
-        f"| {row['solve_time_seconds']:.1f} |"
+        f"| {gap} | {row['solve_time_seconds']:.1f} |"
     )
 table = "\n".join(lines)
 
@@ -69,14 +81,21 @@ deadlock (see `legacy/README.md`, D8) now ends cleanly inside its budget.
 
 ## Methodology
 
+## Methodology
+
 - Two tiers: a 45 s sweep over every file in `dataset/` (tier 1), then a
   300 s deep run on selected non-converged instances (tier 2).
 - Solver settings: `BranchAndPrice(lp_solver='auto', gap=1e-6)`; HiGHS or
   Gurobi LP backend per availability (`auto`).
+- **Gap** = `(cost − lower_bound) / |cost| × 100`, reported only when the
+  solver holds a *sound* lower bound — one produced by fully converged
+  column generation. A partially priced RMP objective is never used as a
+  bound (it sits above the true optimum and would fake a zero gap).
+  `SOLVED_OPTIMAL` rows carry a closed-gap certificate (gap ≤ 1e-6 by
+  construction); `-` means the run ended before any node proved a bound.
 - Raw data: [`results/bench_tier1.json`](../results/bench_tier1.json),
   [`results/bench_tier2.json`](../results/bench_tier2.json),
   merged into [`results/benchmarks.json`](../results/benchmarks.json).
-
 ## Results
 
 {table}
@@ -98,4 +117,42 @@ deadlock (see `legacy/README.md`, D8) now ends cleanly inside its budget.
 *Generated {datetime.now(timezone.utc).date()} by `scripts/merge_bench.py`.*
 """
 (WS / "docs" / "benchmarks.md").write_text(doc, encoding="utf-8")
-print("wrote docs/benchmarks.md and results/benchmarks.json")
+
+# ---------------------------------------------------------------------------
+# Regenerate the README blocks between the BENCH_* markers.
+# ---------------------------------------------------------------------------
+readme_path = WS / "README.md"
+readme = readme_path.read_text(encoding="utf-8")
+
+n_opt = sum(1 for r in final["rows"] if r["status"] == "SOLVED_OPTIMAL")
+n_tl = sum(1 for r in final["rows"] if r["status"] == "TIME_LIMIT")
+tier1_limit = tier1["meta"]["time_limit_s"]
+summary_block = (
+    f"<!-- BENCH_SUMMARY_START -->\n"
+    f"| Tier | Instances | Proven optimal | Honest time limits |\n"
+    f"|------|----------:|---------------:|-------------------:|\n"
+    f"| {tier1_limit:.0f} s sweep | {len(tier1['rows'])} | {n_opt} | {n_tl} |\n"
+    f"| 300 s deep | "
+    f"{len(tier2['rows']) if tier2_path.exists() else 0} selected | "
+    f"see table | see table |\n"
+    f"<!-- BENCH_SUMMARY_END -->"
+)
+table_block = (
+    "<!-- BENCH_TABLE_START -->\n"
+    + table
+    + "\n<!-- BENCH_TABLE_END -->"
+)
+readme = re.sub(
+    r"<!-- BENCH_SUMMARY_START -->.*?<!-- BENCH_SUMMARY_END -->",
+    lambda _: summary_block,
+    readme,
+    flags=re.DOTALL,
+)
+readme = re.sub(
+    r"<!-- BENCH_TABLE_START -->.*?<!-- BENCH_TABLE_END -->",
+    lambda _: table_block,
+    readme,
+    flags=re.DOTALL,
+)
+readme_path.write_text(readme, encoding="utf-8")
+print("wrote docs/benchmarks.md, results/benchmarks.json and README blocks")
