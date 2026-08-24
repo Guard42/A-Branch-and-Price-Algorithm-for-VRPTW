@@ -85,3 +85,18 @@ class TestParser:
         with pytest.raises(SystemExit) as exc:
             cli_main(["--version"])
         assert exc.value.code == 0
+
+
+class TestCheckCommand:
+    def test_check_valid_instance(self, tiny_file: Path, capsys) -> None:
+        code = cli_main(["check", str(tiny_file)])
+        assert code == 0
+        out = capsys.readouterr().out
+        assert "CLI_TINY" in out and "6 customers" in out
+
+    def test_check_invalid_instance(self, tmp_path: Path, capsys) -> None:
+        bad = tmp_path / "BAD.txt"
+        bad.write_text("garbage\n", encoding="utf-8")
+        code = cli_main(["check", str(bad)])
+        assert code == 2
+        assert "INVALID" in capsys.readouterr().err

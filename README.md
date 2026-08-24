@@ -83,8 +83,10 @@ CLI:
 
 ```bash
 python -m bpvrptw solve dataset/C101_25.txt --time-limit 300 --output-json result.json --save-fig solution.png
+python -m bpvrptw check dataset/C101_25.txt     # validate an instance
 python -m bpvrptw bench dataset --time-limit 45 --json bench.json --csv bench.csv
 ```
+
 
 Python API:
 

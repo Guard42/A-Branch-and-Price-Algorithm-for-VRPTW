@@ -10,6 +10,8 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
+import numpy as np
+
 from . import __version__
 from ._util import setup_logging
 from .branch_and_price import BranchAndPrice
@@ -200,8 +202,29 @@ def build_parser() -> argparse.ArgumentParser:
     bench_p.add_argument("--csv", default=None)
     bench_p.add_argument("--quiet", action="store_true")
     bench_p.set_defaults(func=_cmd_bench)
+
+    check_p = subparsers.add_parser(
+        "check", help="validate a Solomon instance without solving it"
+    )
+    check_p.add_argument("instance", help="path to the instance file")
+    check_p.set_defaults(func=_cmd_check)
     return parser
 
+
+def _cmd_check(args: argparse.Namespace) -> int:
+    """Parse + validate an instance and print a short report."""
+    try:
+        instance = VRPTWInstance.from_solomon(args.instance)
+    except InstanceFormatError as exc:
+        print(f"INVALID: {exc}", file=sys.stderr)
+        return 2
+    print(instance.summary())
+    print(
+        f"  start depot window : [{instance.ready_time[0]:g}, "
+        f"{instance.due_time[0]:g}]"
+    )
+    print(f"  horizon            : {float(np.max(instance.due_time)):g}")
+    return 0
 
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
