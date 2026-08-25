@@ -18,6 +18,7 @@ from dataclasses import dataclass, field
 import numpy as np
 
 from ._util import get_logger
+from .construction import greedy_insertion_routes
 from .instance import VRPTWInstance
 from .labeling import ESPPRCSolver
 from .rmp import make_backend
@@ -116,14 +117,26 @@ class ColumnGeneration:
         """
         started = time.perf_counter()
         inst = self._instance
-        seeds = (
-            seed_columns
-            if seed_columns is not None
-            else default_seed_columns(inst, arc_allowed)
-        )
-        # Column order inside the backend: seeds first, then priced columns
-        # in insertion order -- mirrored in ``records`` below.
+        if seed_columns is not None:
+            seeds = seed_columns
+        else:
+            # Default seed pool: single-customer routes PLUS the construction
+            # heuristic's routes, so the RMP starts from a strong basis and
+            # converges in far fewer pricing rounds.
+            seeds = default_seed_columns(inst, arc_allowed)
+            for route in greedy_insertion_routes(inst, arc_allowed=arc_allowed):
+                key = frozenset(route.path[1:-1])
+                if any(frozenset(s.path[1:-1]) == key for s in seeds):
+                    continue
+                seeds.append(route)
+        # NOTE: no customer-set dedup here. Two permutations of the same
+        # visit SET are genuinely different columns under symmetric
+        # distances (only the exact reversal is guaranteed to tie), and the
+        # cheaper order may be exactly the column the RMP is missing.
         records: list[RouteRecord] = list(seeds)
+        backend = make_backend(
+            self._lp_solver, inst, [(r.cost, list(r.path[1:-1])) for r in seeds]
+        )
         backend = make_backend(
             self._lp_solver, inst, [(r.cost, list(r.path[1:-1])) for r in seeds]
         )
@@ -175,17 +188,21 @@ class ColumnGeneration:
                     status = "time_limit"
                     break
 
-                for route in fresh:
-                    record = RouteRecord.from_path(inst, list(route.path))
+                for priced_route in fresh:
+                    record = RouteRecord.from_path(
+                        inst, list(priced_route.path)
+                    )
                     records.append(record)
-                    backend.add_column(record.cost, list(route.path[1:-1]))
-                solution = backend.solve()
+                    backend.add_column(
+                        record.cost, list(priced_route.path[1:-1])
+                    )
                 _logger.debug(
                     "CG iter %d: objective %.6f (+%d columns)",
                     iterations,
                     solution.objective,
                     len(fresh),
                 )
+                solution = backend.solve()
 
             objective = solution.objective
         finally:

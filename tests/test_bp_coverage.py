@@ -62,7 +62,10 @@ class TestNonConvergedNodeSemantics:
                 inst, lp_solver="highs", verbose=True
             ).solve()
         assert solution.status.value == "SOLVED_OPTIMAL"
-        assert any("INCUMBENT |" in r.message for r in caplog.records)
+        assert any(
+            "INCUMBENT |" in r.message or "FEAS |" in r.message
+            for r in caplog.records
+        )
 
 
 class TestInfeasibleInstances:

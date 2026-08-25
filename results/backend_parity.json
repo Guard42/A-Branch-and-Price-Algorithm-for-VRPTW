@@ -1,0 +1,353 @@
+{
+  "time_limit_s": 30.0,
+  "rows": [
+    {
+      "instance": "c101.txt",
+      "highs": "SOLVED_OPTIMAL:828.7",
+      "gurobi": "TIME_LIMIT:828.7",
+      "agree": true
+    },
+    {
+      "instance": "C101_25.txt",
+      "highs": "SOLVED_OPTIMAL:191.7",
+      "gurobi": "SOLVED_OPTIMAL:191.7",
+      "agree": true
+    },
+    {
+      "instance": "C102.txt",
+      "highs": "SOLVED_OPTIMAL:190.6",
+      "gurobi": "SOLVED_OPTIMAL:190.6",
+      "agree": true
+    },
+    {
+      "instance": "C103.txt",
+      "highs": "TIME_LIMIT:1132.4",
+      "gurobi": "TIME_LIMIT:1132.4",
+      "agree": true
+    },
+    {
+      "instance": "C104.txt",
+      "highs": "TIME_LIMIT:1132.4",
+      "gurobi": "TIME_LIMIT:1132.4",
+      "agree": true
+    },
+    {
+      "instance": "C105.txt",
+      "highs": "SOLVED_OPTIMAL:191.7",
+      "gurobi": "SOLVED_OPTIMAL:191.7",
+      "agree": true
+    },
+    {
+      "instance": "C106.txt",
+      "highs": "SOLVED_OPTIMAL:191.7",
+      "gurobi": "SOLVED_OPTIMAL:191.7",
+      "agree": true
+    },
+    {
+      "instance": "C107.txt",
+      "highs": "SOLVED_OPTIMAL:191.7",
+      "gurobi": "SOLVED_OPTIMAL:191.7",
+      "agree": true
+    },
+    {
+      "instance": "C108.txt",
+      "highs": "SOLVED_OPTIMAL:191.7",
+      "gurobi": "SOLVED_OPTIMAL:191.7",
+      "agree": true
+    },
+    {
+      "instance": "C109.txt",
+      "highs": "SOLVED_OPTIMAL:191.7",
+      "gurobi": "SOLVED_OPTIMAL:191.7",
+      "agree": true
+    },
+    {
+      "instance": "C110_1.TXT",
+      "highs": "TIME_LIMIT:402788.0",
+      "gurobi": "TIME_LIMIT:402788.0",
+      "agree": true
+    },
+    {
+      "instance": "C201.txt",
+      "highs": "SOLVED_OPTIMAL:215.6",
+      "gurobi": "SOLVED_OPTIMAL:215.6",
+      "agree": true
+    },
+    {
+      "instance": "C202.txt",
+      "highs": "TIME_LIMIT:1275.4",
+      "gurobi": "TIME_LIMIT:1275.4",
+      "agree": true
+    },
+    {
+      "instance": "C203.txt",
+      "highs": "TIME_LIMIT:1275.4",
+      "gurobi": "TIME_LIMIT:1275.4",
+      "agree": true
+    },
+    {
+      "instance": "C204.txt",
+      "highs": "TIME_LIMIT:1275.4",
+      "gurobi": "TIME_LIMIT:1275.4",
+      "agree": true
+    },
+    {
+      "instance": "C205.txt",
+      "highs": "SOLVED_OPTIMAL:215.6",
+      "gurobi": "SOLVED_OPTIMAL:215.6",
+      "agree": true
+    },
+    {
+      "instance": "C206.txt",
+      "highs": "SOLVED_OPTIMAL:215.6",
+      "gurobi": "SOLVED_OPTIMAL:215.6",
+      "agree": true
+    },
+    {
+      "instance": "C207.txt",
+      "highs": "TIME_LIMIT:1275.4",
+      "gurobi": "TIME_LIMIT:1275.4",
+      "agree": true
+    },
+    {
+      "instance": "C208.txt",
+      "highs": "TIME_LIMIT:1275.4",
+      "gurobi": "TIME_LIMIT:1275.4",
+      "agree": true
+    },
+    {
+      "instance": "R101.txt",
+      "highs": "SOLVED_OPTIMAL:618.1",
+      "gurobi": "SOLVED_OPTIMAL:618.1",
+      "agree": true
+    },
+    {
+      "instance": "R102.txt",
+      "highs": "TIME_LIMIT:547.9",
+      "gurobi": "TIME_LIMIT:547.9",
+      "agree": true
+    },
+    {
+      "instance": "R103.txt",
+      "highs": "SOLVED_OPTIMAL:455.6",
+      "gurobi": "SOLVED_OPTIMAL:455.6",
+      "agree": true
+    },
+    {
+      "instance": "R104.txt",
+      "highs": "SOLVED_OPTIMAL:418.0",
+      "gurobi": "SOLVED_OPTIMAL:418.0",
+      "agree": true
+    },
+    {
+      "instance": "R105.txt",
+      "highs": "SOLVED_OPTIMAL:531.3",
+      "gurobi": "SOLVED_OPTIMAL:531.3",
+      "agree": true
+    },
+    {
+      "instance": "R106.txt",
+      "highs": "TIME_LIMIT:1245.8",
+      "gurobi": "TIME_LIMIT:1245.8",
+      "agree": true
+    },
+    {
+      "instance": "R107.txt",
+      "highs": "SOLVED_OPTIMAL:425.3",
+      "gurobi": "SOLVED_OPTIMAL:425.3",
+      "agree": true
+    },
+    {
+      "instance": "R108.txt",
+      "highs": "TIME_LIMIT:1245.8",
+      "gurobi": "TIME_LIMIT:1245.8",
+      "agree": true
+    },
+    {
+      "instance": "R109.txt",
+      "highs": "SOLVED_OPTIMAL:442.7",
+      "gurobi": "SOLVED_OPTIMAL:442.7",
+      "agree": true
+    },
+    {
+      "instance": "R110.txt",
+      "highs": "TIME_LIMIT:1245.8",
+      "gurobi": "TIME_LIMIT:1245.8",
+      "agree": true
+    },
+    {
+      "instance": "R111.txt",
+      "highs": "TIME_LIMIT:1245.8",
+      "gurobi": "TIME_LIMIT:1245.8",
+      "agree": true
+    },
+    {
+      "instance": "R112.txt",
+      "highs": "TIME_LIMIT:1245.8",
+      "gurobi": "TIME_LIMIT:1245.8",
+      "agree": true
+    },
+    {
+      "instance": "R201.txt",
+      "highs": "TIME_LIMIT:1245.8",
+      "gurobi": "TIME_LIMIT:1245.8",
+      "agree": true
+    },
+    {
+      "instance": "R202.txt",
+      "highs": "TIME_LIMIT:1245.8",
+      "gurobi": "TIME_LIMIT:1245.8",
+      "agree": true
+    },
+    {
+      "instance": "R203.txt",
+      "highs": "TIME_LIMIT:1245.8",
+      "gurobi": "TIME_LIMIT:1245.8",
+      "agree": true
+    },
+    {
+      "instance": "R204.txt",
+      "highs": "TIME_LIMIT:1245.8",
+      "gurobi": "TIME_LIMIT:1245.8",
+      "agree": true
+    },
+    {
+      "instance": "R205.txt",
+      "highs": "TIME_LIMIT:1245.8",
+      "gurobi": "TIME_LIMIT:1245.8",
+      "agree": true
+    },
+    {
+      "instance": "R206.txt",
+      "highs": "TIME_LIMIT:1245.8",
+      "gurobi": "TIME_LIMIT:1245.8",
+      "agree": true
+    },
+    {
+      "instance": "R207.txt",
+      "highs": "TIME_LIMIT:1245.8",
+      "gurobi": "TIME_LIMIT:1245.8",
+      "agree": true
+    },
+    {
+      "instance": "R208.txt",
+      "highs": "TIME_LIMIT:1245.8",
+      "gurobi": "TIME_LIMIT:1245.8",
+      "agree": true
+    },
+    {
+      "instance": "R209.txt",
+      "highs": "TIME_LIMIT:1245.8",
+      "gurobi": "TIME_LIMIT:1245.8",
+      "agree": true
+    },
+    {
+      "instance": "R210.txt",
+      "highs": "TIME_LIMIT:1245.8",
+      "gurobi": "TIME_LIMIT:1245.8",
+      "agree": true
+    },
+    {
+      "instance": "R211.txt",
+      "highs": "TIME_LIMIT:1245.8",
+      "gurobi": "TIME_LIMIT:1245.8",
+      "agree": true
+    },
+    {
+      "instance": "RC101.txt",
+      "highs": "TIME_LIMIT:1887.0",
+      "gurobi": "TIME_LIMIT:1887.0",
+      "agree": true
+    },
+    {
+      "instance": "RC102.txt",
+      "highs": "SOLVED_OPTIMAL:352.9",
+      "gurobi": "SOLVED_OPTIMAL:352.9",
+      "agree": true
+    },
+    {
+      "instance": "RC103.txt",
+      "highs": "SOLVED_OPTIMAL:334.2",
+      "gurobi": "SOLVED_OPTIMAL:334.2",
+      "agree": true
+    },
+    {
+      "instance": "RC104.txt",
+      "highs": "SOLVED_OPTIMAL:307.20000000000005",
+      "gurobi": "SOLVED_OPTIMAL:307.20000000000005",
+      "agree": true
+    },
+    {
+      "instance": "RC105.txt",
+      "highs": "SOLVED_OPTIMAL:412.4",
+      "gurobi": "SOLVED_OPTIMAL:412.4",
+      "agree": true
+    },
+    {
+      "instance": "RC106.txt",
+      "highs": "SOLVED_OPTIMAL:346.6",
+      "gurobi": "SOLVED_OPTIMAL:346.6",
+      "agree": true
+    },
+    {
+      "instance": "RC107.txt",
+      "highs": "SOLVED_OPTIMAL:299.1",
+      "gurobi": "SOLVED_OPTIMAL:299.1",
+      "agree": true
+    },
+    {
+      "instance": "RC108.txt",
+      "highs": "SOLVED_OPTIMAL:295.0",
+      "gurobi": "SOLVED_OPTIMAL:295.0",
+      "agree": true
+    },
+    {
+      "instance": "RC201.txt",
+      "highs": "SOLVED_OPTIMAL:361.4",
+      "gurobi": "SOLVED_OPTIMAL:361.4",
+      "agree": true
+    },
+    {
+      "instance": "RC202.txt",
+      "highs": "TIME_LIMIT:1887.0",
+      "gurobi": "TIME_LIMIT:1887.0",
+      "agree": true
+    },
+    {
+      "instance": "RC203.txt",
+      "highs": "TIME_LIMIT:1887.0",
+      "gurobi": "TIME_LIMIT:1887.0",
+      "agree": true
+    },
+    {
+      "instance": "RC204.txt",
+      "highs": "TIME_LIMIT:1887.0",
+      "gurobi": "TIME_LIMIT:1887.0",
+      "agree": true
+    },
+    {
+      "instance": "RC205.txt",
+      "highs": "TIME_LIMIT:1887.0",
+      "gurobi": "TIME_LIMIT:1887.0",
+      "agree": true
+    },
+    {
+      "instance": "RC206.txt",
+      "highs": "TIME_LIMIT:1887.0",
+      "gurobi": "TIME_LIMIT:1887.0",
+      "agree": true
+    },
+    {
+      "instance": "RC207.txt",
+      "highs": "TIME_LIMIT:1887.0",
+      "gurobi": "TIME_LIMIT:1887.0",
+      "agree": true
+    },
+    {
+      "instance": "RC208.txt",
+      "highs": "TIME_LIMIT:1887.0",
+      "gurobi": "TIME_LIMIT:1887.0",
+      "agree": true
+    }
+  ]
+}

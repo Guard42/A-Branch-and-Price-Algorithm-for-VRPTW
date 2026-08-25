@@ -31,6 +31,7 @@ import numpy as np
 
 from ._util import get_logger
 from .column_generation import PRICING_THRESHOLD, CGResult, ColumnGeneration
+from .construction import greedy_insertion_routes
 from .instance import VRPTWInstance
 from .solution import RouteRecord, Solution, SolutionStatus
 
@@ -401,14 +402,43 @@ class BranchAndPrice:
 
         root = _TreeNode(toplevel=True)
 
-        # Initial incumbent: the all-single-customer solution (every feasible
-        # seed route used once). Guarantees a feasible UB for instances where
-        # the search cannot reach any integer node before its deadline.
-        if seed_routes:
+        # Initial incumbent: prefer the construction heuristic's solution
+        # (much tighter than all-single-customer routes); extend it with
+        # solo routes for any customer the heuristic could not place, and
+        # fall back to the pure singles solution when construction found
+        # nothing. Guarantees a feasible UB even for starved runs.
+        initial_pool = list(seed_routes)
+        constructed = greedy_insertion_routes(inst)
+        if constructed:
+            covered: set[int] = set()
+            for route in constructed:
+                covered.update(route.path[1:-1])
+                initial_pool.append(route)
+            for c in inst.customers:
+                if c not in covered:
+                    try:
+                        initial_pool.append(
+                            RouteRecord.from_path(inst, [0, c, inst.end_depot])
+                        )
+                    except ValueError:
+                        continue
+            missing = [
+                c for c in inst.customers
+                if all(c not in r.path[1:-1] for r in constructed)
+            ]
+            if not missing and sum(
+                r.load for r in constructed
+            ) <= inst.capacity * inst.vehicle_count + 1e-9:
+                # The heuristic covers everyone -> a valid incumbent.
+                ctx.upperbound = sum(r.cost for r in constructed)
+                ctx.best_routes = [copy.deepcopy(r) for r in constructed]
+        elif seed_routes:
+            ctx.upperbound = sum(r.cost for r in seed_routes)
+            ctx.best_routes = list(seed_routes)
             ctx.upperbound = sum(r.cost for r in seed_routes)
             ctx.best_routes = list(seed_routes)
 
-        _node(root, inst.dist.copy(), list(seed_routes), 0)
+        _node(root, inst.dist.copy(), list(initial_pool), 0)
 
         timed_out = ctx.deadline is not None and time.perf_counter() > ctx.deadline
         lb_valid = ctx.lowerbound > -1e9
