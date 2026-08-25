@@ -3,9 +3,9 @@
   "rows": [
     {
       "instance": "c101.txt",
-      "highs": "SOLVED_OPTIMAL:828.7",
-      "gurobi": "TIME_LIMIT:828.7",
-      "agree": true
+      "highs": "TIME_LIMIT:828.7",
+      "gurobi": "TIME_LIMIT:1140.1",
+      "agree": false
     },
     {
       "instance": "C101_25.txt",
@@ -21,14 +21,14 @@
     },
     {
       "instance": "C103.txt",
-      "highs": "TIME_LIMIT:1132.4",
-      "gurobi": "TIME_LIMIT:1132.4",
-      "agree": true
+      "highs": "TIME_LIMIT:190.6",
+      "gurobi": "TIME_LIMIT:212.8",
+      "agree": false
     },
     {
       "instance": "C104.txt",
-      "highs": "TIME_LIMIT:1132.4",
-      "gurobi": "TIME_LIMIT:1132.4",
+      "highs": "TIME_LIMIT:217.0",
+      "gurobi": "TIME_LIMIT:217.0",
       "agree": true
     },
     {
@@ -63,8 +63,8 @@
     },
     {
       "instance": "C110_1.TXT",
-      "highs": "TIME_LIMIT:402788.0",
-      "gurobi": "TIME_LIMIT:402788.0",
+      "highs": "TIME_LIMIT:78728.1",
+      "gurobi": "TIME_LIMIT:78728.1",
       "agree": true
     },
     {
@@ -75,20 +75,20 @@
     },
     {
       "instance": "C202.txt",
-      "highs": "TIME_LIMIT:1275.4",
-      "gurobi": "TIME_LIMIT:1275.4",
-      "agree": true
+      "highs": "TIME_LIMIT:215.6",
+      "gurobi": "TIME_LIMIT:258.3",
+      "agree": false
     },
     {
       "instance": "C203.txt",
-      "highs": "TIME_LIMIT:1275.4",
-      "gurobi": "TIME_LIMIT:1275.4",
+      "highs": "TIME_LIMIT:258.3",
+      "gurobi": "TIME_LIMIT:258.3",
       "agree": true
     },
     {
       "instance": "C204.txt",
-      "highs": "TIME_LIMIT:1275.4",
-      "gurobi": "TIME_LIMIT:1275.4",
+      "highs": "TIME_LIMIT:307.8",
+      "gurobi": "TIME_LIMIT:307.8",
       "agree": true
     },
     {
@@ -105,14 +105,14 @@
     },
     {
       "instance": "C207.txt",
-      "highs": "TIME_LIMIT:1275.4",
-      "gurobi": "TIME_LIMIT:1275.4",
-      "agree": true
+      "highs": "TIME_LIMIT:395.3",
+      "gurobi": "TIME_LIMIT:215.29999999999998",
+      "agree": false
     },
     {
       "instance": "C208.txt",
-      "highs": "TIME_LIMIT:1275.4",
-      "gurobi": "TIME_LIMIT:1275.4",
+      "highs": "SOLVED_OPTIMAL:215.4",
+      "gurobi": "SOLVED_OPTIMAL:215.4",
       "agree": true
     },
     {
@@ -123,8 +123,8 @@
     },
     {
       "instance": "R102.txt",
-      "highs": "TIME_LIMIT:547.9",
-      "gurobi": "TIME_LIMIT:547.9",
+      "highs": "SOLVED_OPTIMAL:547.9",
+      "gurobi": "SOLVED_OPTIMAL:547.9",
       "agree": true
     },
     {
@@ -147,8 +147,8 @@
     },
     {
       "instance": "R106.txt",
-      "highs": "TIME_LIMIT:1245.8",
-      "gurobi": "TIME_LIMIT:1245.8",
+      "highs": "TIME_LIMIT:466.40000000000003",
+      "gurobi": "TIME_LIMIT:466.40000000000003",
       "agree": true
     },
     {
@@ -159,8 +159,8 @@
     },
     {
       "instance": "R108.txt",
-      "highs": "TIME_LIMIT:1245.8",
-      "gurobi": "TIME_LIMIT:1245.8",
+      "highs": "TIME_LIMIT:521.0",
+      "gurobi": "TIME_LIMIT:521.0",
       "agree": true
     },
     {
@@ -171,92 +171,92 @@
     },
     {
       "instance": "R110.txt",
-      "highs": "TIME_LIMIT:1245.8",
-      "gurobi": "TIME_LIMIT:1245.8",
-      "agree": true
+      "highs": "TIME_LIMIT:454.1",
+      "gurobi": "TIME_LIMIT:480.9",
+      "agree": false
     },
     {
       "instance": "R111.txt",
-      "highs": "TIME_LIMIT:1245.8",
-      "gurobi": "TIME_LIMIT:1245.8",
+      "highs": "TIME_LIMIT:429.6",
+      "gurobi": "TIME_LIMIT:429.6",
       "agree": true
     },
     {
       "instance": "R112.txt",
-      "highs": "TIME_LIMIT:1245.8",
-      "gurobi": "TIME_LIMIT:1245.8",
+      "highs": "TIME_LIMIT:395.4",
+      "gurobi": "TIME_LIMIT:395.4",
       "agree": true
     },
     {
       "instance": "R201.txt",
-      "highs": "TIME_LIMIT:1245.8",
-      "gurobi": "TIME_LIMIT:1245.8",
+      "highs": "TIME_LIMIT:661.0",
+      "gurobi": "TIME_LIMIT:661.0",
       "agree": true
     },
     {
       "instance": "R202.txt",
-      "highs": "TIME_LIMIT:1245.8",
-      "gurobi": "TIME_LIMIT:1245.8",
-      "agree": true
+      "highs": "SOLVED_OPTIMAL:411.5",
+      "gurobi": "TIME_LIMIT:650.5",
+      "agree": false
     },
     {
       "instance": "R203.txt",
-      "highs": "TIME_LIMIT:1245.8",
-      "gurobi": "TIME_LIMIT:1245.8",
+      "highs": "TIME_LIMIT:558.8",
+      "gurobi": "TIME_LIMIT:558.8",
       "agree": true
     },
     {
       "instance": "R204.txt",
-      "highs": "TIME_LIMIT:1245.8",
-      "gurobi": "TIME_LIMIT:1245.8",
+      "highs": "TIME_LIMIT:572.1",
+      "gurobi": "TIME_LIMIT:572.1",
       "agree": true
     },
     {
       "instance": "R205.txt",
-      "highs": "TIME_LIMIT:1245.8",
-      "gurobi": "TIME_LIMIT:1245.8",
+      "highs": "TIME_LIMIT:512.8",
+      "gurobi": "TIME_LIMIT:512.8",
       "agree": true
     },
     {
       "instance": "R206.txt",
-      "highs": "TIME_LIMIT:1245.8",
-      "gurobi": "TIME_LIMIT:1245.8",
+      "highs": "TIME_LIMIT:500.8",
+      "gurobi": "TIME_LIMIT:500.8",
       "agree": true
     },
     {
       "instance": "R207.txt",
-      "highs": "TIME_LIMIT:1245.8",
-      "gurobi": "TIME_LIMIT:1245.8",
+      "highs": "TIME_LIMIT:479.4",
+      "gurobi": "TIME_LIMIT:479.4",
       "agree": true
     },
     {
       "instance": "R208.txt",
-      "highs": "TIME_LIMIT:1245.8",
-      "gurobi": "TIME_LIMIT:1245.8",
+      "highs": "TIME_LIMIT:461.09999999999997",
+      "gurobi": "TIME_LIMIT:461.09999999999997",
       "agree": true
     },
     {
       "instance": "R209.txt",
-      "highs": "TIME_LIMIT:1245.8",
-      "gurobi": "TIME_LIMIT:1245.8",
+      "highs": "TIME_LIMIT:569.3",
+      "gurobi": "TIME_LIMIT:569.3",
       "agree": true
     },
     {
       "instance": "R210.txt",
-      "highs": "TIME_LIMIT:1245.8",
-      "gurobi": "TIME_LIMIT:1245.8",
+      "highs": "TIME_LIMIT:567.6",
+      "gurobi": "TIME_LIMIT:567.6",
       "agree": true
     },
     {
       "instance": "R211.txt",
-      "highs": "TIME_LIMIT:1245.8",
-      "gurobi": "TIME_LIMIT:1245.8",
+      "highs": "TIME_LIMIT:500.8",
+      "gurobi": "TIME_LIMIT:500.8",
       "agree": true
     },
     {
       "instance": "RC101.txt",
-      "highs": "TIME_LIMIT:1887.0",
-      "gurobi": "TIME_LIMIT:1887.0",
+      "highs": "TIME_LIMIT:596.3",
+      "gurobi": "TIME_LIMIT:596.3",
       "agree": true
     },
     {
@@ -309,44 +309,44 @@
     },
     {
       "instance": "RC202.txt",
-      "highs": "TIME_LIMIT:1887.0",
-      "gurobi": "TIME_LIMIT:1887.0",
+      "highs": "SOLVED_OPTIMAL:338.9",
+      "gurobi": "SOLVED_OPTIMAL:338.9",
       "agree": true
     },
     {
       "instance": "RC203.txt",
-      "highs": "TIME_LIMIT:1887.0",
-      "gurobi": "TIME_LIMIT:1887.0",
+      "highs": "TIME_LIMIT:493.5",
+      "gurobi": "TIME_LIMIT:493.5",
       "agree": true
     },
     {
       "instance": "RC204.txt",
-      "highs": "TIME_LIMIT:1887.0",
-      "gurobi": "TIME_LIMIT:1887.0",
+      "highs": "TIME_LIMIT:436.3",
+      "gurobi": "TIME_LIMIT:436.3",
       "agree": true
     },
     {
       "instance": "RC205.txt",
-      "highs": "TIME_LIMIT:1887.0",
-      "gurobi": "TIME_LIMIT:1887.0",
+      "highs": "SOLVED_OPTIMAL:339.1",
+      "gurobi": "SOLVED_OPTIMAL:339.1",
       "agree": true
     },
     {
       "instance": "RC206.txt",
-      "highs": "TIME_LIMIT:1887.0",
-      "gurobi": "TIME_LIMIT:1887.0",
+      "highs": "SOLVED_OPTIMAL:325.2",
+      "gurobi": "SOLVED_OPTIMAL:325.2",
       "agree": true
     },
     {
       "instance": "RC207.txt",
-      "highs": "TIME_LIMIT:1887.0",
-      "gurobi": "TIME_LIMIT:1887.0",
+      "highs": "TIME_LIMIT:572.4",
+      "gurobi": "TIME_LIMIT:572.4",
       "agree": true
     },
     {
       "instance": "RC208.txt",
-      "highs": "TIME_LIMIT:1887.0",
-      "gurobi": "TIME_LIMIT:1887.0",
+      "highs": "TIME_LIMIT:336.3",
+      "gurobi": "TIME_LIMIT:336.3",
       "agree": true
     }
   ]
