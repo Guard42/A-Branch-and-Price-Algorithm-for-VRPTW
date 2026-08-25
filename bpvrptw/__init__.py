@@ -43,8 +43,8 @@ __all__ = [
     "SolutionStatus",
     "VRPTWInstance",
     "apply_branching",
+    "plot_schedule",
     "plot_solution",
-    "solve",
 ]
 
 
@@ -78,9 +78,6 @@ def solve(
     ).solve()
 
 
-class SolveError(RuntimeError):
-    """Placeholder alias kept so CLI errors can be distinguished later."""
-
 
 def plot_solution(*args: object, **kwargs: object) -> object:
     """Lazy proxy for :func:`bpvrptw.visualization.plot_solution`.
@@ -91,6 +88,17 @@ def plot_solution(*args: object, **kwargs: object) -> object:
     """
     try:
         from .visualization import plot_solution as _impl
+    except ImportError as exc:  # pragma: no cover - environment specific
+        raise ImportError(
+            "plotting requires matplotlib; install with: pip install bpvrptw[plot]"
+        ) from exc
+    return _impl(*args, **kwargs)  # type: ignore[arg-type]
+
+
+def plot_schedule(*args: object, **kwargs: object) -> object:
+    """Lazy proxy for :func:`bpvrptw.schedule.plot_schedule` (Gantt view)."""
+    try:
+        from .schedule import plot_schedule as _impl
     except ImportError as exc:  # pragma: no cover - environment specific
         raise ImportError(
             "plotting requires matplotlib; install with: pip install bpvrptw[plot]"

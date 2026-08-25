@@ -59,8 +59,8 @@ flowchart TB
 - **Verified**: pricing soundness + optimal minimum cross-checked against
   brute-force enumeration; branch-and-price matched against an exact DP on
   tiny instances; C101_25 reproduces the known optimum with certificate.
-- **CLI & harness**: `python -m bpvrptw solve|bench`, JSON/CSV outputs,
-  headless plotting.
+- **CLI & harness**: `python -m bpvrptw solve|bench|check`, JSON/CSV outputs,
+  headless spatial routes + Gantt schedule plotting.
 
 ## Installation
 

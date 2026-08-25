@@ -56,3 +56,14 @@ def test_public_lazy_proxy(tmp_path: Path, tiny_instance: VRPTWInstance) -> None
     out = tmp_path / "p.png"
     bpvrptw.plot_solution(tiny_instance, _solution(tiny_instance), save_path=out)
     assert out.exists()
+
+
+def test_schedule_saves_png(tmp_path: Path, tiny_instance: VRPTWInstance) -> None:
+    from bpvrptw.schedule import plot_schedule
+
+    out = tmp_path / "art" / "sched.png"
+    fig = plot_schedule(
+        tiny_instance, _solution(tiny_instance), save_path=out
+    )
+    assert fig is not None
+    assert out.exists() and out.stat().st_size > 1000
