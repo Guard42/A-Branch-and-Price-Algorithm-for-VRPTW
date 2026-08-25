@@ -5,9 +5,24 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.1] - 2026-08-25
+## [0.2.0] - 2026-08-25
 
 ### Added
+
+- **Construction heuristic** (`bpvrptw/construction.py`): deterministic
+  parallel cheapest-feasible-insertion (Solomon I1 style). Its routes seed
+  the RMP and its solution is the initial branch-and-price incumbent.
+  Impact: proven-optimal count on the bundled suite rose from 28/58 to
+  **36/58**; previously hopeless instances now solve to optimality
+  (C103 190.60, R106 466.40, R108 398.30, RC203 327.80).
+- `bpvrptw check` CLI subcommand: validate a Solomon instance without solving.
+- Backend cross-validation (`scripts/backend_parity.py`): all 58 instances
+  solved under BOTH HiGHS and Gurobi - zero cost mismatches on the 24+
+  instances both prove optimal.
+- Legacy-vs-new parity harness (`scripts/legacy_parity.py`) with verified
+  identical optima on C101_25, R101, RC106 and C201.
+- Docs link checker and GitHub issue/PR templates; architecture diagram in
+  the README.
 
 - `bpvrptw check` CLI subcommand: validate a Solomon instance without solving.
 - Legacy-vs-new parity harness (`scripts/legacy_parity.py`) with verified

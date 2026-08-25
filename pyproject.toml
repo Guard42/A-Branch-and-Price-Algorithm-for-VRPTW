@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "bpvrptw"
-version = "0.1.1"
+version = "0.2.0"
 description = "Branch-and-Price exact solver for VRPTW (educational)"
 readme = "README.md"
 authors = [{ name = "Junwei Li" }]
