@@ -31,8 +31,9 @@ from bpvrptw.visualization import plot_solution  # noqa: E402
 
 FAMILY_FILTER = sys.argv[1] if len(sys.argv) > 1 else ""
 FAMILIES = tuple(f.strip().lower() for f in FAMILY_FILTER.split(",") if f.strip())
-
-
+# Generous per-solver budget: enough for every 25-customer instance and
+# No time limit: let both solvers run to completion.
+PER_SOLVER_LIMIT = 9000.0  # 2.5h per method per instance (user request)
 def wanted(name: str) -> bool:
     if not FAMILIES:
         return True
@@ -45,22 +46,34 @@ def main() -> None:
         p for p in (WS / "dataset").iterdir()
         if p.is_file() and p.suffix.lower() == ".txt" and wanted(p.name)
     )
-    rows: list[dict[str, object]] = []
     fig_dir = WS / "fig" / "solutions"
     fig_dir.mkdir(parents=True, exist_ok=True)
 
+    # Incremental save: load any previous results so we can skip completed
+    # instances and never lose data on interruption.
+    out_path = WS / "results" / "full_comparison.json"
+    rows: list[dict[str, object]] = []
+    done: set[str] = set()
+    if out_path.exists():
+        prev = json.loads(out_path.read_text(encoding="utf-8"))
+        rows = list(prev.get("rows", []))
+        done = {r["instance"] for r in rows}
+        print(f"resuming: {len(done)} instances already completed", flush=True)
     for path in files:
-        inst = VRPTWInstance.from_solomon(path)
         name = path.name
-
+        if name in done:
+            print(f"skip {name} (already done)", flush=True)
+            continue
+        inst = VRPTWInstance.from_solomon(path)
         t0 = time.perf_counter()
-        mip = solve_mip(inst)
+        mip = solve_mip(inst, time_limit_seconds=PER_SOLVER_LIMIT)
         mip_t = time.perf_counter() - t0
 
         t0 = time.perf_counter()
-        bp = BranchAndPrice(inst, lp_solver="gurobi").solve()
+        bp = BranchAndPrice(
+            inst, lp_solver="gurobi", time_limit_seconds=PER_SOLVER_LIMIT
+        ).solve()
         bp_t = time.perf_counter() - t0
-
         cost_gap = (
             abs(bp.total_cost - mip.total_cost) / max(abs(mip.total_cost), 1e-9) * 100.0
             if mip.status.value != "INFEASIBLE" else None
@@ -111,6 +124,11 @@ def main() -> None:
             "cost_match": cost_match,
         }
         rows.append(row)
+        # Incremental save after every instance.
+        out_path.write_text(
+            json.dumps({"meta": {"incremental": True}, "rows": rows}, indent=2),
+            encoding="utf-8",
+        )
         print(
             f"{name:<14} MIP[{mip.status.value}:{mip.total_cost:.1f}:{mip_t:.1f}s] "
             f"BP[{bp.status.value}:{bp.total_cost:.1f}:{bp_t:.1f}s] "

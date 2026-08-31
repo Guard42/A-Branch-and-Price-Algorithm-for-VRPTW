@@ -79,6 +79,8 @@ def solve_mip(
     model = gp.Model("bpvrptw-mip")
     if not verbose:
         model.setParam("OutputFlag", 0)
+    if time_limit_seconds is not None:
+        model.setParam("TimeLimit", time_limit_seconds)
 
     x = model.addVars(arcs, vtype=GRB.BINARY, name="x")
     t = model.addVars(range(n), lb=0.0, name="t")
