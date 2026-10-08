@@ -24,6 +24,7 @@ jobs:
       - name: Lint (ruff)
         run: python -m ruff check .
       - name: Test (pytest)
+        run: python -m pytest -q
       - name: Types (mypy)
         run: python -m mypy bpvrptw
       - name: Docs links
@@ -60,4 +61,15 @@ jobs:
         with:
           name: c10125-smoke
           path: artifacts/c10125_smoke.json
-        run: python -m pytest -q
+
+  cpp:
+    # Build the C++ implementation and reproduce known optima.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure CMake
+        run: cmake -S cpp -B cpp/build -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build cpp/build --config Release --parallel
+      - name: Reproduce known optima
+        run: ctest --test-dir cpp/build --output-on-failure
