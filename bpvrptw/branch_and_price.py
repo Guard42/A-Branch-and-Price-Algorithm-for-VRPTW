@@ -435,8 +435,6 @@ class BranchAndPrice:
         elif seed_routes:
             ctx.upperbound = sum(r.cost for r in seed_routes)
             ctx.best_routes = list(seed_routes)
-            ctx.upperbound = sum(r.cost for r in seed_routes)
-            ctx.best_routes = list(seed_routes)
 
         _node(root, inst.dist.copy(), list(initial_pool), 0)
 
