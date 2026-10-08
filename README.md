@@ -8,14 +8,27 @@
 An **exact** branch-and-price solver for the Vehicle Routing Problem with
 Time Windows, packaged as a proper Python library — typed API, dual LP
 backends, bounded resources, and a test suite that verifies optimality
-against brute force.
+against brute force. A dependency-free C++17 twin of the same algorithm
+lives under [`cpp/`](cpp/README.md).
 
 ![B&P solution for VRPTW on dataset C101](fig/VRPTW_B&P_Sol_DatasetC101.png)
 
-> **一句话简介**：这是仓库初版（对 Java 项目 dengfaheng/BPVRPTW 的 AI 移植）
-> 的库级重写：类型化 API、HiGHS/Gurobi 双后端、有界资源、暴力对拍测试。
+> **一句话简介**：这是仓库初版的库级重写：类型化 API、HiGHS/Gurobi 双后端、
+> 有界资源、暴力对拍测试。
 > 旧实现按字节原样封存在 [`legacy/`](legacy/README.md)，作为反面教材与学习笔记。
 > 算法细节见 [docs/algorithm.md](docs/algorithm.md)。
+
+## Contact
+
+If you have any questions regarding this repository, feel free to reach out.
+Author: Junwei Li ([junweilee@njust.edu.cn](mailto:junweilee@njust.edu.cn))
+
+## Updates
+
+* August 2026: library-grade rewrite — the `bpvrptw` package, HiGHS/Gurobi
+  dual backends, bounded pricing, a CLI, and a full measured benchmark
+  suite (see Benchmarks below).
+* March 14, 2025: Upload code and data for the B&P algorithm to solve VRPTW.
 
 ## What is this?
 
@@ -61,6 +74,9 @@ flowchart TB
   tiny instances; C101_25 reproduces the known optimum with certificate.
 - **CLI & harness**: `python -m bpvrptw solve|bench|check`, JSON/CSV outputs,
   headless spatial routes + Gantt schedule plotting.
+- **C++17 twin implementation** ([`cpp/`](cpp/README.md)): the same
+  branch-and-price algorithm compiled, with a built-in simplex replacing
+  the external LP backends — no Python environment, no solver, no license.
 
 ## Installation
 
@@ -135,6 +151,40 @@ algorithm (dominance rule, Feillet pruning, best-first ordering); the
 branch-and-bound tree branches on fractional edges when the LP solution is
 integral-infeasible. Full walkthrough with the mathematics:
 **[docs/algorithm.md](docs/algorithm.md)**.
+
+## Dataset
+
+The algorithm has been benchmarked using the
+[Solomon dataset](https://w.cba.neu.edu/~msolomon/problems.htm), a widely
+recognized set of instances in the field of vehicle routing problems. It
+was introduced by Marius Solomon in 1987 and comprises 56 instances with
+100 customers each, categorized by customer distribution and scheduling
+horizon into six types:
+
+1. **C-Type (Clustered Customers)**
+   - **C1:** clustered customer locations with narrow time windows and
+     small vehicle capacities, leading to solutions with more routes and
+     fewer customers per route.
+   - **C2:** similar to C1 but with larger time windows and vehicle
+     capacities, resulting in fewer routes with more customers per route.
+
+2. **R-Type (Randomly Distributed Customers)**
+   - **R1:** randomly distributed customers with narrow time windows and
+     small vehicle capacities — more routes, fewer customers per route.
+   - **R2:** similar to R1 but with larger time windows and vehicle
+     capacities — fewer routes, more customers per route.
+
+3. **RC-Type (Mixed Distribution of Customers)**
+   - **RC1:** combines clustered and randomly distributed customers with
+     narrow time windows and small vehicle capacities.
+   - **RC2:** similar to RC1 but with larger time windows and vehicle
+     capacities.
+
+Each instance file is named to reflect its category, e.g. `c101.txt` is a
+C1-type instance while `r201.txt` corresponds to an R2-type instance. The
+instances bundled under `dataset/` are mostly 25-customer truncations of
+these files; `c101.txt` is the one full 100-customer instance in the
+bundled suite.
 
 ## Benchmarks
 
@@ -219,7 +269,10 @@ Per-instance results (auto-generated, do not edit by hand):
 
 Highlights: every C-family 25-customer instance → 191.7 / 215.6 proven
 optimal; `c104` — the instance that hung forever in the legacy port — now
-returns its incumbent cleanly inside its budget.
+returns its incumbent cleanly inside its budget. As with any exact
+method, solving time grows quickly with instance size and time-window
+looseness: many 100-customer R2/RC2 instances hit even the 2.5 h budget
+in the comparison table below.
 
 ### Gurobi MIP vs Branch-and-Price (no time limits)
 
@@ -312,11 +365,36 @@ catalogued in [`legacy/README.md`](legacy/README.md) and fixed here:
 | D7 | Hardcoded absolute paths | None anywhere |
 | D8 | Unbounded loops → c104 hang | Bounded labels/time, graceful TIME_LIMIT |
 
+## A C++17 twin implementation
+
+[`cpp/`](cpp/README.md) contains a complete, dependency-free C++17
+implementation of the same branch-and-price algorithm: Solomon reader,
+bounded best-first ESPPRC pricing with Feillet pruning, a warm-started
+column-generation loop, and the same arc-based branch-and-bound tree. The
+one structural difference: the restricted master problem is solved by a
+built-in two-phase revised simplex, so the binary needs no external LP
+solver, no Python environment and no license at all.
+
+```bash
+cmake -S cpp -B cpp/build -DCMAKE_BUILD_TYPE=Release
+cmake --build cpp/build --config Release
+cpp/build/bpvrptw_cpp dataset/C101_25.txt --time-limit 300   # 191.70, 3 routes
+```
+
+Correctness is pinned by a test target that reproduces the known optima of
+seven bundled instances (~4 s, also wired into CI as the `cpp` job) and
+re-validates full route feasibility on every answer; the full
+100-customer `c101.txt` is proven optimal at 828.70 with 10 routes. It is
+the same educational design as the Python package — just compiled, with
+no solver to install. Build and usage details in
+[`cpp/README.md`](cpp/README.md).
+
 ## Project layout
 
 ```
 bpvrptw/            the library (instance, labeling, rmp, column_generation,
                     branch_and_price, visualization, cli)
+cpp/                the dependency-free C++17 twin (own README inside)
 tests/              pytest suite incl. brute-force references
 scripts/            benchmark harness and report checks
 docs/               algorithm walkthrough + benchmark report
@@ -326,6 +404,21 @@ legacy/             the original flat implementation, byte-identical,
                     with its defect catalogue — do not develop there
 fig/                example solution figures
 ```
+
+The original flat scripts of the first release are preserved
+byte-identical under `legacy/`:
+
+- `legacy/branchBound.py` — Branch-and-Bound driver for the VRPTW.
+- `legacy/columnGen.py` — the column generation used inside the
+  branch-and-bound loop.
+- `legacy/paramsVRP.py` — parameter class storing and processing the VRP
+  data.
+- `legacy/route.py` — the `Route` class representing vehicle routes.
+- `legacy/solVisualization.py` — solution visualization.
+- `legacy/SPPRC.py` — label setting/correcting for the Shortest Path
+  Problem with Resource Constraints, generating routes with negative cost
+  to improve the objective.
+- `legacy/main.py` — the original entry script.
 
 ## FAQ
 
@@ -357,7 +450,20 @@ with its incumbent and an honest TIME_LIMIT row in the benchmarks.
 It is an educational implementation: correctness-first, readability over
 throughput. For research-grade exact VRP solving see RouteOpt or the
 generic branch-cut-and-price framework of Pessoa et al.; you will want
-C++ pricing, ng-routes and dual stabilization.
+C++ pricing, ng-routes and dual stabilization. The bundled
+[`cpp/`](cpp/README.md) implementation gives you the compiled-pricing part
+of that list as a starting point.
+
+## Roadmap and compute budget
+
+This is an educational implementation, developed that way on purpose.
+Suggestions for future improvements — for example ng-route relaxation,
+bidirectional labeling, dual stabilization, or pushing the C++
+implementation further — are welcome in the issue tracker: as long as the
+author's token budget holds, a coding agent will pick the issue up and
+work through it. What I can no longer commit to is extending the
+experimental results: running benchmarks is extremely CPU-bound, and the
+author has only a single personal computer that cannot take that load.
 
 ## Contributing
 
@@ -375,10 +481,14 @@ that matter: ruff clean, full pytest green, README snippets runnable.
 
 - [dengfaheng/BPVRPTW](https://github.com/dengfaheng/BPVRPTW) — the Java
   original this project was ported from (itself following M. Schyns'
-  educational implementation and the book 《运筹优化常用模型、算法及案例实战——Python+Java实现》).
-- [Solomon's VRPTW benchmarks](https://w.cba.neu.edu/~msolomon/problems.htm).
-- The zhihu ESPPRC article series (linked from the legacy README) that
-  accompanied the original learning effort.
+  educational implementation).
+
+## References
+
+- [Solomon's VRPTW Benchmark Problems](https://w.cba.neu.edu/~msolomon/problems.htm)
+- [运筹优化常用模型、算法及案例实战——Python+Java实现](http://www.tup.tsinghua.edu.cn/booksCenter/book_09109001.html)
+- [优化-详解资源受限的基本最短路问题(ESPPRC)-模型、复杂度证明及C++调用CPLEX代码实现](https://zhuanlan.zhihu.com/p/624558974)
+- [优化 | 详解标签算法求解资源受限的基本最短路问题(ESPPRC)【续】：理论、案例及C++实现](https://zhuanlan.zhihu.com/p/627964895)
 
 ## License
 
