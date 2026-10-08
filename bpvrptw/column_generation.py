@@ -137,9 +137,6 @@ class ColumnGeneration:
         backend = make_backend(
             self._lp_solver, inst, [(r.cost, list(r.path[1:-1])) for r in seeds]
         )
-        backend = make_backend(
-            self._lp_solver, inst, [(r.cost, list(r.path[1:-1])) for r in seeds]
-        )
         try:
             pricing_routes = (
                 pricing_max_routes

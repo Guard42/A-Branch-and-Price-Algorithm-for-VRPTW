@@ -182,3 +182,7 @@ artifacts/
 # Harness-local state (not part of the library)
 .humanize/
 .dsh_better_edit/
+
+# C++ build artifacts (cpp/)
+*.exe
+*.obj
